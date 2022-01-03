@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xml>
+	<ModInfo>
+		<Name value="OcbPinRecipes" />
+		<Description value="Pin recipes on your UI so you don't forget the ingredients." />
+		<Website value="https://github.com/OCB7D2D/PinRecipes" />
+		<Author value="ocbMaurice" />
+		<Version value="0.1.0" compat="A20"/>
+	</ModInfo>
+</xml>

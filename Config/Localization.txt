@@ -1,0 +1,4 @@
+Key,File,Type,English
+
+lblContextActionPinRecipe,ui,ui,Pin
+xuiUnpinRecipe,ui,ui,Unpin

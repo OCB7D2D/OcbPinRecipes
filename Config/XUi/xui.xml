@@ -1,0 +1,9 @@
+<configs>
+
+	<append xpath="/xui/ruleset[@name='default']">
+		<window_group name="pinRecipes" actionSet="false" controller="XUiC_PinRecipes, PinRecipes">
+			<window name="windowPinRecipes" />
+		</window_group>
+	</append>
+
+</configs>
