@@ -102,7 +102,6 @@ public class XUiC_PinRecipes : XUiController
     public override void OnOpen()
     {
         base.OnOpen();
-        Log.Out("Pin On Open");
         xui.PlayerInventory.OnBackpackItemsChanged += new XUiEvent_BackpackItemsChanged(this.PlayerInventory_OnBackpackItemsChanged);
         xui.PlayerInventory.OnToolbeltItemsChanged += new XUiEvent_ToolbeltItemsChanged(this.PlayerInventory_OnToolbeltItemsChanged);
     }
@@ -110,7 +109,6 @@ public class XUiC_PinRecipes : XUiController
     public override void OnClose()
     {
         base.OnClose();
-        Log.Out("Pin On Close");
         xui.PlayerInventory.OnBackpackItemsChanged -= new XUiEvent_BackpackItemsChanged(this.PlayerInventory_OnBackpackItemsChanged);
         xui.PlayerInventory.OnToolbeltItemsChanged -= new XUiEvent_ToolbeltItemsChanged(this.PlayerInventory_OnToolbeltItemsChanged);
     }
@@ -245,15 +243,6 @@ public class XUiC_PinRecipes : XUiController
         }
     }
 
-    private string GetItemPos(int queue)
-    {
-        if (PinRecipes.Recipes == null) return "0,0";
-        int range = PinRecipes.Recipes.Count * 80;
-        int pos = queue * 80; // - range / 2;
-        Log.Out("Item Pos " + "0," + pos.ToString());
-        return "0," + pos.ToString();
-    }
-
     private string GetItemIconTint(int queue)
     {
         if (PinRecipes.Recipes == null) return colorFormatter.Format(Color.white);
@@ -272,29 +261,11 @@ public class XUiC_PinRecipes : XUiController
     public override bool GetBindingValue(ref string value, string bindingName)
     {
 
-        // Log.Out("GetBindingValue " + bindingName);
-
-        if (bindingName == "windowheight")
-        {
-            value = (PinRecipes.Recipes.Count * 80).ToString();
-            Log.Out("window height  " + value);
-            value = "\"400\"";
-            return true;
-        }
-        else if (bindingName == "queuedvisible")
-        {
-            value = (PinRecipes.Recipes.Count < 8).ToString();
-            return true;
-        }
-
-        else if (bindingName.StartsWith("item"))
+        if (bindingName.StartsWith("item"))
         {
             int i = int.Parse(bindingName.Substring(4, 1));
             switch (bindingName.Substring(5))
             {
-                case "pos":
-                    value = GetItemPos(i);
-                    return true;
                 case "title":
                     value = GetItemTitle(i);
                     return true;
