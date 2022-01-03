@@ -516,7 +516,7 @@
 							   width="135" height="30" justify="left" pivot="center"
 							   effect="outline" color="[white]"/>
 					</rect>
-					<rect depth="13" width="190" height="30" pos="0,-35" visible="{material91visible}">
+					<rect depth="13" width="170" height="30" pos="0,-35" visible="{material91visible}">
 						<rect depth="13" width="30" height="30" pos="0,0">
 							<sprite color="[darkGrey]" type="sliced" />
 							<sprite depth="14" name="craftmaterial91" width="30" height="30" atlas="ItemIconAtlas" sprite="{material91icon}" color="{material91tint}" />
