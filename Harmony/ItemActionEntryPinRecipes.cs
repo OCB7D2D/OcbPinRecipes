@@ -7,16 +7,14 @@ public class ItemActionEntryPinRecipes : BaseItemActionEntry
     private static Recipe recipe;
 
     public ItemActionEntryPinRecipes(XUiController controller, Recipe _recipe) :
-        base(controller, "lblContextActionPinRecipe", "ui_game_symbol_pen", GamepadShortCut.DPadLeft)
+        base(controller, "lblContextActionPinRecipe", "ui_game_symbol_pin", GamepadShortCut.DPadLeft)
     {
         recipe = _recipe;
     }
 
     public override void OnActivated()
     {
-        // Update via static "proxy"
-        PinRecipes.Recipes.Add(recipe);
-        PinRecipes.IsDirty = true;
+        PinRecipesManager.Instance.PinRecipe(recipe);
     }
 
 }

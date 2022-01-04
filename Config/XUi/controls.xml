@@ -1,0 +1,56 @@
+<configs>
+
+	<append xpath="/controls">
+		
+		<pinned_recipe_row slot="9999">
+			<rect depth="1" width="170" height="65" slot="${slot}"
+				  controller="XUiC_PinnedRecipe, PinRecipes">
+				<sprite pos="0,0" width="172" height="65" color="[black]" type="sliced" />
+				<sprite pos="1,-1" width="170" height="63" color="[lightGrey]" type="sliced" />
+				<rect depth="4" pos="1,-1" width="170" height="30">
+					<sprite width="30" height="30" color="[darkGrey]" type="sliced" />
+					<sprite depth="2" width="30" height="30" atlas="ItemIconAtlas"
+							foregroundlayer="true" globalopacitymod="0.9"
+							sprite="{icon}" color="{iconTint}" />
+					<label depth="3" pos="95,-15" text="{title}" font_size="18"
+						   width="120" height="30" justify="left" pivot="center"
+					       effect="None" color="[white]" foregroundlayer="true"/>
+					<button depth="14" pos="162,-8" width="10" height="10"
+							name="Unpin" type="sliced" hoverscale="1.2"
+							sprite="ui_game_symbol_x"
+							defaultcolor="240,128,128,180"
+							hovercolor="240,128,128,255"
+							justify="center" pivot="center"
+							sound="[paging_click]"
+							foregroundlayer="true"
+							tooltip_key="xuiUnpinRecipe" />
+				</rect>
+				<rect depth="6" pos="1,-34" width="170" height="30">
+					<grid rows="5" width="170" height="30"
+						  cell_height="30" cell_width="35" arrangement="horizontal">
+						<pinned_recipe_igredient_row name="0" index="0"/>
+						<pinned_recipe_igredient_row name="1" index="1"/>
+						<pinned_recipe_igredient_row name="2" index="2"/>
+						<pinned_recipe_igredient_row name="3" index="3"/>
+						<pinned_recipe_igredient_row name="4" index="4"/>
+					</grid>
+				</rect>
+			</rect>
+		</pinned_recipe_row>
+
+		<pinned_recipe_igredient_row index="9999">
+			<rect width="30" height="30" index="${index}" tooltip="tooltip"
+				  controller="XUiC_PinnedRecipeIngredient, PinRecipes">
+				<sprite depth="2" color="[darkGrey]" type="sliced" />
+				<sprite depth="4" name="icon" width="30" height="30" atlas="ItemIconAtlas"
+						sprite="{icon}" color="{iconTint}" foregroundlayer="true" globalopacitymod="0.9" />
+				<sprite depth="5" width="20" height="20" pos="5,-5" foregroundlayer="true" globalopacitymod="0.8"
+						sprite="ui_game_symbol_check" visible="{hasEnough}" color="[green]"/>
+				<label depth="6" name="count" pos="15,-15" text="{delta}" font_size="18" visible="{needsMore}" foregroundlayer="true"
+					   width="30" height="30" justify="center" pivot="center" effect="Outline" color="{textColor}" effect_color="[darkGrey]"/>
+			</rect>
+		</pinned_recipe_igredient_row>
+
+	</append>
+		
+</configs>

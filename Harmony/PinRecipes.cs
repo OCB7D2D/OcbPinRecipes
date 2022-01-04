@@ -1,15 +1,8 @@
 ﻿using HarmonyLib;
-using UnityEngine;
 using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
 
 public class PinRecipes : IModApi
 {
-
-    // Abuse static fields as poor man's manager
-    public static List<Recipe> Recipes = new List<Recipe>();
-    public static bool IsDirty = true;
 
     public void InitMod(Mod mod)
     {
@@ -19,13 +12,25 @@ public class PinRecipes : IModApi
     }
 
     [HarmonyPatch(typeof(EntityPlayerLocal))]
-    [HarmonyPatch("OnHUD")]
+    [HarmonyPatch("guiDrawCrosshair")]
     public class EntityPlayerLocal_OnHUD
     {
         static void Postfix(GUIWindowManager ___windowManager)
         {
-            ___windowManager.OpenIfNotOpen(XUiC_PinRecipes.ID, false);
-            IsDirty = true;
+            if (GameManager.Instance.IsPaused()) return;
+             ___windowManager.OpenIfNotOpen(XUiC_PinRecipes.ID, false);
+        }
+    }
+
+    [HarmonyPatch(typeof(XUiC_InGameMenuWindow))]
+    [HarmonyPatch("OnOpen")]
+    public class XUiC_InGameMenuWindow_OnOpen
+    {
+        static void Postfix(XUiC_InGameMenuWindow __instance)
+        {
+            if (!GameManager.Instance.IsPaused()) return;
+            __instance.xui.playerUI.windowManager
+                .CloseIfOpen(XUiC_PinRecipes.ID);
         }
     }
 
@@ -33,16 +38,14 @@ public class PinRecipes : IModApi
     [HarmonyPatch("SetCraftingActionList")]
     public class XUiC_ItemActionList_SetCraftingActionList
     {
-        static void Postfix(XUiC_ItemActionList __instance, Recipe ___recipe,
-            XUiC_ItemActionList.ItemActionListTypes _actionListType,
+        static void Postfix(XUiC_ItemActionList __instance,
             XUiController itemController)
         {
-            if (___recipe == null) return;
-            if (___recipe.materialBasedRecipe) return;
-            if (_actionListType != XUiC_ItemActionList.ItemActionListTypes.Crafting) return;
-            XUiC_RecipeEntry xuiCRecipeEntry = (XUiC_RecipeEntry)itemController;
-            if (___recipe != xuiCRecipeEntry.Recipe) return;
-            __instance.AddActionListEntry(new ItemActionEntryPinRecipes(itemController, ___recipe));
+            if (itemController is XUiC_RecipeEntry xuiCRecipeEntry)
+            {
+                if (xuiCRecipeEntry.Recipe == null || xuiCRecipeEntry.Recipe.materialBasedRecipe) return;
+                __instance.AddActionListEntry(new ItemActionEntryPinRecipes(itemController, xuiCRecipeEntry.Recipe));
+            }
         }
     }
 

@@ -78,11 +78,15 @@
   <ItemGroup>
     <Compile Include="Harmony\PinRecipes.cs" />
     <Compile Include="Harmony\AssemblyInfo.cs" />
+    <Compile Include="Harmony\PinRecipesManager.cs" />
+    <Compile Include="Harmony\XUiC_PinnedRecipe.cs" />
+    <Compile Include="Harmony\XUiC_PinnedRecipeIngredient.cs" />
     <Compile Include="Harmony\XUiC_PinRecipes.cs" />
     <Compile Include="Harmony\ItemActionEntryPinRecipes.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\Localization.txt" />
+    <Content Include="Config\XUi\controls.xml" />
     <Content Include="Config\XUi\windows.xml" />
     <Content Include="Config\XUi\xui.xml" />
   </ItemGroup>
