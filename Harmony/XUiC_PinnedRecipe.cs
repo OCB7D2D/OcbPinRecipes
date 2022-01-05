@@ -164,7 +164,7 @@ public class XUiC_PinnedRecipe : XUiController
         if (recipe == null) return string.Empty;
         if (count > 1)
         {
-            return count.ToString() + " x " + 
+            return count.ToString() + " " + 
                 Localization.Get(recipe.GetName());
         }
         else

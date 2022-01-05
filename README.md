@@ -2,6 +2,12 @@
 
 A small harmony mod enabling to pin recipes on the UI.
 
+Needs to be installed client and server side. And both need
+EAC (Easy Anti-Cheat) to be turned off! There is no server-side
+only version of this mod as it contains custom code. The mod
+must also be installed on dedicated servers if you want to
+use it in that setup, to persist pinned recipes for users.
+
 ![In-Game Pinned Recipes](Screens/in-game-screen-pins.jpg)
 
 ![In-Game Details Pinned](Screens/in-game-left-pins.png)
@@ -10,7 +16,10 @@ A small harmony mod enabling to pin recipes on the UI.
 
 ### Version 0.3.0
 
-- Added craft to clear recipe button
+- Amount of items is now also pinned
+- Added craft & clear recipe button
+- Refactored data persisting to work on server
+- Old pinned recipes will be lost on upgrade
 
 ### Version 0.2.0
 

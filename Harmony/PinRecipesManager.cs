@@ -13,20 +13,16 @@ public class PinRecipesManager
 
     public List<XUiController> widgets = new List<XUiController>();
 
-    public static byte FileVersion = 2;
+    public static byte FileVersion = 1;
 
     public byte CurrentFileVersion { get; set; }
-
-    private ThreadManager.ThreadInfo dataSaveThreadInfo;
 
     public static PinRecipesManager Instance
     {
         get
         {
             if (instance != null) return instance;
-            instance = new PinRecipesManager();
-            instance.LoadPinnedRecipesManager();
-            return instance;
+            return new PinRecipesManager();
         }
     }
 
@@ -58,7 +54,6 @@ public class PinRecipesManager
     public void PinRecipe(Recipe recipe, int count = 1)
     {
         Recipes.Add(new PinnedRecipeDTO(recipe, count));
-        SavePinnedRecipesManager();
         SetWidgetsDirty();
     }
 
@@ -66,7 +61,6 @@ public class PinRecipesManager
     {
         if (Recipes.Count <= slot) return;
         Recipes.RemoveAt(slot);
-        SavePinnedRecipesManager();
         SetWidgetsDirty();
     }
 
@@ -124,67 +118,7 @@ public class PinRecipesManager
         return recipe.ingredients[index];
     }
 
-
-    public void LoadPinnedRecipesManager()
-    {
-        string path = string.Format("{0}/{1}", GameIO.GetSaveGameDir(), "pinned_recipes.dat");
-        if (!File.Exists(path)) return;
-        try
-        {
-            using (FileStream fileStream = File.OpenRead(path))
-            {
-                using (PooledBinaryReader pooledBinaryReader = MemoryPools.poolBinaryReader.AllocSync(false))
-                {
-                    pooledBinaryReader.SetBaseStream(fileStream);
-                    Read(pooledBinaryReader);
-                }
-            }
-        }
-        catch (System.Exception)
-        {
-            string backup = path + ".bak";
-            if (!File.Exists(backup)) return;
-            using (FileStream fileStream = File.OpenRead(backup))
-            {
-                using (PooledBinaryReader pooledBinaryReader = MemoryPools.poolBinaryReader.AllocSync(false))
-                {
-                    pooledBinaryReader.SetBaseStream(fileStream);
-                    Read(pooledBinaryReader);
-                }
-            }
-        }
-    }
-
-    private int SavePinnedRecipesDataThreaded(ThreadManager.ThreadInfo _threadInfo)
-    {
-        PooledExpandableMemoryStream parameter = (PooledExpandableMemoryStream)_threadInfo.parameter;
-        string str = string.Format("{0}/{1}", GameIO.GetSaveGameDir(), "pinned_recipes.dat");
-        if (File.Exists(str)) File.Copy(str, str + ".bak", true);
-        parameter.Position = 0L;
-        StreamUtils.WriteStreamToFile((Stream)parameter, str);
-        MemoryPools.poolMemoryStream.FreeSync(parameter);
-        return -1;
-    }
-
-    public void SavePinnedRecipesManager()
-    {
-        // Only create the save manager thread once is enough, bail out early if it already exists
-        if (dataSaveThreadInfo != null && ThreadManager.ActiveThreads.ContainsKey("silent_pinnedRecipesDataSave")) return;
-        // ToDo: check why we allocate a in-memory stream here (though we are going to write on wire or disk)
-        PooledExpandableMemoryStream expandableMemoryStream = MemoryPools.poolMemoryStream.AllocSync(true);
-        using (PooledBinaryWriter pooledBinaryWriter = MemoryPools.poolBinaryWriter.AllocSync(false))
-        {
-            pooledBinaryWriter.SetBaseStream(expandableMemoryStream);
-            Write(pooledBinaryWriter);
-        }
-        // Create a background thread to do the actual data saving and writing to disk
-        dataSaveThreadInfo = ThreadManager.StartThread("silent_pinnedRecipesDataSave", null,
-            new ThreadManager.ThreadFunctionLoopDelegate(SavePinnedRecipesDataThreaded),
-            null, _parameter: expandableMemoryStream);
-    }
-
-    // Write all data to the storage
-    public void Write(BinaryWriter bw)
+    public void WritePlayerData(PooledBinaryWriter bw)
     {
         bw.Write(FileVersion);
         bw.Write(Recipes.Count);
@@ -195,18 +129,24 @@ public class PinRecipesManager
         }
     }
 
-    // Read all data back from storage
-    public void Read(BinaryReader br)
+    public void ReadPlayerData(PooledBinaryReader br)
     {
+        // Check if we have additional data to be read
+        // This way we should be able to upgrade the stream if needed
+        if (br.BaseStream.Position >= br.BaseStream.Length)
+        {
+            Log.Warning("Vanilla game detected, user data will be upgraded");
+            return;
+        }
+        Recipes.Clear();
         CurrentFileVersion = br.ReadByte();
         int count = br.ReadInt32();
         for (int index = 0; index < count; ++index)
         {
-            int multiply = 1;
-            if (CurrentFileVersion > 1)
-                multiply = br.ReadInt32();
+            int multiply = br.ReadInt32();
             string name = br.ReadString();
-            if (CraftingManager.GetRecipe(name) is Recipe recipe) {
+            if (CraftingManager.GetRecipe(name) is Recipe recipe)
+            {
                 Recipes.Add(new PinnedRecipeDTO(recipe, multiply));
             }
         }

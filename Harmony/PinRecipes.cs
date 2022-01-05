@@ -67,4 +67,24 @@ public class PinRecipes : IModApi
         }
     }
 
+    [HarmonyPatch(typeof(PlayerDataFile))]
+    [HarmonyPatch("Write")]
+    public class PlayerDataFile_Write
+    {
+        static void Postfix(PooledBinaryWriter _bw)
+        {
+            PinRecipesManager.Instance.WritePlayerData(_bw);
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerDataFile))]
+    [HarmonyPatch("Read")]
+    public class PlayerDataFile_Read
+    {
+        static void Postfix(PooledBinaryReader _br)
+        {
+            PinRecipesManager.Instance.ReadPlayerData(_br);
+        }
+    }
+
 }
