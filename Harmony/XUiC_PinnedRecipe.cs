@@ -14,6 +14,16 @@ public class XUiC_PinnedRecipe : XUiController
         = new CachedStringFormatterXuiRgbaColor();
     private static readonly PinRecipesManager PinManager = PinRecipesManager.Instance;
 
+    private void OnIncrement(XUiController _sender, int _mouseButton)
+    {
+        PinRecipesManager.Instance.IncrementCount(Slot);
+    }
+
+    private void OnDecrement(XUiController _sender, int _mouseButton)
+    {
+        PinRecipesManager.Instance.DecrementCount(Slot);
+    }
+
     private void OnUnpin(XUiController _sender, int _mouseButton)
     {
         PinRecipesManager.Instance.UnpinRecipe(Slot);
@@ -123,6 +133,12 @@ public class XUiC_PinnedRecipe : XUiController
         }
         if (GetChildById("Unpin") is XUiController unpin)
             unpin.OnPress += new XUiEvent_OnPressEventHandler(OnUnpin);
+        if (GetChildById("Decrement") is XUiController decrement)
+            decrement.OnPress += new XUiEvent_OnPressEventHandler(OnDecrement);
+
+        if (GetChildById("Increment") is XUiController increment)
+            increment.OnPress += new XUiEvent_OnPressEventHandler(OnIncrement);
+
         if (GetChildById("Craft") is XUiController craft)
             craft.OnPress += new XUiEvent_OnPressEventHandler(OnCraft);
         IsDirty = true;
@@ -160,17 +176,8 @@ public class XUiC_PinnedRecipe : XUiController
     private string GetTitle()
     {
         Recipe recipe = GetRecipe();
-        int count = GetRecipeCount();
         if (recipe == null) return string.Empty;
-        if (count > 1)
-        {
-            return count.ToString() + " " + 
-                Localization.Get(recipe.GetName());
-        }
-        else
-        {
-            return Localization.Get(recipe.GetName());
-        }
+        return Localization.Get(recipe.GetName());
     }
 
     private string GetIconTint()
@@ -274,11 +281,17 @@ public class XUiC_PinnedRecipe : XUiController
             case "iconTint":
                 value = GetIconTint();
                 return true;
+            case "amount":
+                value = GetRecipeCount().ToString();
+                return true;
             case "isVisible":
                 value = IsVisible().ToString();
                 return true;
             case "canCraft":
                 value = CanCraft().ToString();
+                return true;
+            case "canDecrement":
+                value = (GetRecipeCount() > 1).ToString();
                 return true;
         }
         value = "";

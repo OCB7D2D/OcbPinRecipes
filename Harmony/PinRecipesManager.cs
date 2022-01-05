@@ -64,6 +64,20 @@ public class PinRecipesManager
         SetWidgetsDirty();
     }
 
+    public void IncrementCount(int slot)
+    {
+        if (Recipes.Count <= slot) return;
+        Recipes[slot].Count += 1;
+        SetWidgetsDirty();
+    }
+    public void DecrementCount(int slot)
+    {
+        if (Recipes.Count <= slot) return;
+        if (Recipes[slot].Count < 2) return;
+        Recipes[slot].Count -= 1;
+        SetWidgetsDirty();
+    }
+
     public Recipe GetRecipe(int slot)
     {
         return Recipes.Count <= slot ?

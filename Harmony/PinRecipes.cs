@@ -87,4 +87,17 @@ public class PinRecipes : IModApi
         }
     }
 
+    // This would kinda work ...
+    // [HarmonyPatch(typeof(XUiC_RecipeCraftCount))]
+    // [HarmonyPatch("CalculateMaxCount")]
+    // public class XUiC_RecipeCraftCount_CalculateMaxCount
+    // {
+    //     static void Postfix(XUiC_RecipeCraftCount __instance)
+    //     {
+    //         // Allow to scroll there anyway
+    //         if (__instance.MaxCount < 99)
+    //             __instance.MaxCount = 99;
+    //     }
+    // }
+
 }

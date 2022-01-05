@@ -12,9 +12,32 @@
 					<sprite depth="2" width="30" height="30" atlas="ItemIconAtlas"
 							foregroundlayer="true" globalopacitymod="0.9"
 							sprite="{icon}" color="{iconTint}" />
-					<label depth="3" pos="95,-15" text="{title}" font_size="18"
+					<label depth="3" name="count" pos="27,-30" text="{amount}" font_size="16" visible="true" foregroundlayer="true"
+						   width="30" height="20" justify="right" pivot="BottomRight" effect="Outline" color="[white]" effect_color="[darkGrey]"/>
+
+					<label depth="6" pos="95,-15" text="{title}" font_size="18"
 						   width="120" height="30" justify="left" pivot="center"
 					       effect="None" color="[white]" foregroundlayer="true"/>
+
+					<button depth="13" pos="20,-8" width="10" height="10"
+							name="Decrement" type="sliced" hoverscale="1.2"
+							sprite="ui_game_symbol_decrement"
+							defaultcolor="240,240,240,180"
+							justify="center" pivot="center"
+							sound="[paging_click]"
+							foregroundlayer="true"
+							visible="{canDecrement}"
+							tooltip_key="xuiDecrement" />
+
+					<button depth="13" pos="8,-8" width="10" height="10"
+							name="Increment" type="sliced" hoverscale="1.2"
+							sprite="ui_game_symbol_increment"
+							defaultcolor="240,240,240,180"
+							justify="center" pivot="center"
+							sound="[paging_click]"
+							foregroundlayer="true"
+							tooltip_key="xuiIncrement" />
+
 					<button depth="14" pos="162,-8" width="10" height="10"
 							name="Unpin" type="sliced" hoverscale="1.2"
 							sprite="ui_game_symbol_x"

@@ -12,6 +12,12 @@ use it in that setup, to persist pinned recipes for users.
 
 ![In-Game Details Pinned](Screens/in-game-left-pins.png)
 
+The craft & clear button is still a bit experimental, as
+I had to copy a bit more code than wanted in order to do
+all the necessary checks. So there is a chance that I
+missed a few edge cases in that regard. Please report
+here on GitHub if you find any issues with it.
+
 ## Changelog
 
 ### Version 0.3.0
