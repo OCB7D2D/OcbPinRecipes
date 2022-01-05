@@ -42,6 +42,11 @@ public class XUiC_PinnedRecipeIngredient : XUiController
         return PinManager.GetRecipe(Slot);
     }
 
+    private int GetRecipeCount()
+    {
+        return PinManager.GetRecipeCount(Slot);
+    }
+
     private ItemStack GetIngredient()
     {
         return PinManager.GetRecipeIngredient(Slot, Index);
@@ -84,34 +89,12 @@ public class XUiC_PinnedRecipeIngredient : XUiController
 
     private int GetAvailable()
     {
-        ItemStack ingredient = GetIngredient();
-        if (ingredient == null) return -1;
-        return xui.PlayerInventory.GetItemCount(
-            ingredient.itemValue);
+        return PinManager.GetAvailableIngredient(Slot, Index, xui);
     }
 
     private int GetNeeded()
     {
-        Recipe recipe = GetRecipe();
-        if (recipe == null) return -1;
-        ItemStack ingredient = GetIngredient();
-        if (ingredient == null) return 999999;
-        // I hope I copied the following code correctly
-        // Should take tier into account for what's needed
-        // Then reach out to player inventory for what we have
-        float tier = EffectManager.GetValue(
-            PassiveEffects.CraftingTier,
-            _originalValue: 1f,
-            _entity: xui.playerUI.entityPlayer,
-            _recipe: recipe,
-            tags: recipe.tags);
-        return (int)EffectManager.GetValue(
-            PassiveEffects.CraftingIngredientCount,
-            _originalValue: ingredient.count,
-            _entity: xui.playerUI.entityPlayer,
-            _recipe: recipe,
-            tags: FastTags.Parse(ingredient.itemValue.ItemClass.GetItemName()),
-            craftingTier: (int)tier);
+        return PinManager.GetNeededIngredient(Slot, Index, xui);
     }
 
     public override bool GetBindingValue(ref string value, string bindingName)

@@ -76,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\PinnedRecipeDTO.cs" />
     <Compile Include="Harmony\PinRecipes.cs" />
     <Compile Include="Harmony\AssemblyInfo.cs" />
     <Compile Include="Harmony\PinRecipesManager.cs" />

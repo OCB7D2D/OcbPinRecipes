@@ -19,11 +19,19 @@
 							name="Unpin" type="sliced" hoverscale="1.2"
 							sprite="ui_game_symbol_x"
 							defaultcolor="240,128,128,180"
-							hovercolor="240,128,128,255"
 							justify="center" pivot="center"
 							sound="[paging_click]"
 							foregroundlayer="true"
 							tooltip_key="xuiUnpinRecipe" />
+					<button depth="15" pos="162,-22" width="10" height="10"
+							name="Craft" type="sliced" hoverscale="1.2"
+							sprite="ui_game_symbol_hammer"
+							defaultcolor="90,248,90,240"
+							justify="center" pivot="center"
+							sound="[recipe_click]"
+							foregroundlayer="true"
+							visible="{canCraft}"
+							tooltip_key="lblContextActionCraft" />
 				</rect>
 				<rect depth="6" pos="1,-34" width="170" height="30">
 					<grid rows="5" width="170" height="30"

@@ -23,31 +23,41 @@ public class XUiC_PinRecipes : XUiController
     public override void OnOpen()
     {
         base.OnOpen();
-        xui.PlayerInventory.OnBackpackItemsChanged += new XUiEvent_BackpackItemsChanged(PlayerInventory_OnBackpackItemsChanged);
-        xui.PlayerInventory.OnToolbeltItemsChanged += new XUiEvent_ToolbeltItemsChanged(PlayerInventory_OnToolbeltItemsChanged);
-        QuestEventManager.Current.SkillPointSpent += new QuestEvent_SkillPointSpent(QuestEvent_OnSkillPointSpent);
+        xui.PlayerInventory.OnBackpackItemsChanged += new XUiEvent_BackpackItemsChanged(OnInventoryEvent);
+        xui.PlayerInventory.OnToolbeltItemsChanged += new XUiEvent_ToolbeltItemsChanged(OnInventoryEvent);
+        QuestEventManager.Current.SkillPointSpent += new QuestEvent_SkillPointSpent(OnQuestEvent);
+        QuestEventManager.Current.WindowOpened += new QuestEvent_WindowOpened(OnQuestEvent);
         PinRecipesManager.Instance.RegisterWidget(this);
     }
 
     public override void OnClose()
     {
         base.OnClose();
-        xui.PlayerInventory.OnBackpackItemsChanged -= new XUiEvent_BackpackItemsChanged(PlayerInventory_OnBackpackItemsChanged);
-        xui.PlayerInventory.OnToolbeltItemsChanged -= new XUiEvent_ToolbeltItemsChanged(PlayerInventory_OnToolbeltItemsChanged);
-        QuestEventManager.Current.SkillPointSpent -= new QuestEvent_SkillPointSpent(QuestEvent_OnSkillPointSpent);
+        xui.PlayerInventory.OnBackpackItemsChanged -= new XUiEvent_BackpackItemsChanged(OnInventoryEvent);
+        xui.PlayerInventory.OnToolbeltItemsChanged -= new XUiEvent_ToolbeltItemsChanged(OnInventoryEvent);
+        QuestEventManager.Current.SkillPointSpent -= new QuestEvent_SkillPointSpent(OnQuestEvent);
+        QuestEventManager.Current.WindowOpened -= new QuestEvent_WindowOpened(OnQuestEvent);
         PinRecipesManager.Instance.UnregisterWidget(this);
     }
 
-    private void QuestEvent_OnSkillPointSpent(string skillName) => SetAllChildrenDirty(true);
+    private void OnQuestEvent(string _)
+    {
+        SetAllChildrenDirty(true);
+        if (PinRecipesManager.HasInstance)
+            PinRecipesManager.Instance.SetWidgetsDirty();
+    }
 
-    private void PlayerInventory_OnToolbeltItemsChanged() => SetAllChildrenDirty(true);
-
-    private void PlayerInventory_OnBackpackItemsChanged() => SetAllChildrenDirty(true);
+    private void OnInventoryEvent()
+    {
+        SetAllChildrenDirty(true);
+        if (PinRecipesManager.HasInstance)
+            PinRecipesManager.Instance.SetWidgetsDirty();
+    }
 
     public override void Update(float _dt)
     {
         if (!XUi.IsGameRunning()) return;
-        // if (IsDirty == false) return;
+        if (IsDirty == false) return;
         RefreshBindings();
         base.Update(_dt);
         IsDirty = false;

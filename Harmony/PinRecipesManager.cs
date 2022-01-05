@@ -9,11 +9,11 @@ public class PinRecipesManager
 
     public bool IsDirty = true;
 
-    public List<Recipe> Recipes = new List<Recipe>();
+    public List<PinnedRecipeDTO> Recipes = new List<PinnedRecipeDTO>();
 
     public List<XUiController> widgets = new List<XUiController>();
 
-    public static byte FileVersion = 1;
+    public static byte FileVersion = 2;
 
     public byte CurrentFileVersion { get; set; }
 
@@ -37,11 +37,10 @@ public class PinRecipesManager
         instance = this;
     }
 
-    private void UpdateAllWidgets()
+    public void SetWidgetsDirty()
     {
         foreach (var widget in widgets)
             widget.SetAllChildrenDirty(true);
-        SavePinnedRecipesManager();
     }
 
     public void RegisterWidget(XUiController widget)
@@ -56,23 +55,64 @@ public class PinRecipesManager
         widget.SetAllChildrenDirty(true);
     }
 
-    public void PinRecipe(Recipe recipe)
+    public void PinRecipe(Recipe recipe, int count = 1)
     {
-        Recipes.Add(recipe);
-        UpdateAllWidgets();
+        Recipes.Add(new PinnedRecipeDTO(recipe, count));
+        SavePinnedRecipesManager();
+        SetWidgetsDirty();
     }
 
     public void UnpinRecipe(int slot)
     {
         if (Recipes.Count <= slot) return;
         Recipes.RemoveAt(slot);
-        UpdateAllWidgets();
+        SavePinnedRecipesManager();
+        SetWidgetsDirty();
     }
 
     public Recipe GetRecipe(int slot)
     {
         return Recipes.Count <= slot ?
-            null : Recipes[slot];
+            null : Recipes[slot].Recipe;
+    }
+
+    public int GetRecipeCount(int slot)
+    {
+        return Recipes.Count <= slot ?
+            -1 : Recipes[slot].Count;
+    }
+
+    public int GetAvailableIngredient(int slot, int idx, XUi xui)
+    {
+        ItemStack ingredient = GetRecipeIngredient(slot, idx);
+        if (ingredient == null) return -1;
+        return xui.PlayerInventory.GetItemCount(
+            ingredient.itemValue);
+    }
+
+    public int GetNeededIngredient(int slot, int idx, XUi xui)
+    {
+        Recipe recipe = GetRecipe(slot);
+        if (recipe == null) return -1;
+        ItemStack ingredient = GetRecipeIngredient(slot, idx);
+        if (ingredient == null) return 999999;
+        // I hope I copied the following code correctly
+        // Should take tier into account for what's needed
+        // Then reach out to player inventory for what we have
+        float tier = EffectManager.GetValue(
+            PassiveEffects.CraftingTier,
+            _originalValue: 1f,
+            _entity: xui.playerUI.entityPlayer,
+            _recipe: recipe,
+            tags: recipe.tags);
+        int needed = (int)EffectManager.GetValue(
+            PassiveEffects.CraftingIngredientCount,
+            _originalValue: ingredient.count,
+            _entity: xui.playerUI.entityPlayer,
+            _recipe: recipe,
+            tags: FastTags.Parse(ingredient.itemValue.ItemClass.GetItemName()),
+            craftingTier: (int)tier);
+        return needed * GetRecipeCount(slot);
     }
 
     public ItemStack GetRecipeIngredient(int slot, int index)
@@ -148,9 +188,10 @@ public class PinRecipesManager
     {
         bw.Write(FileVersion);
         bw.Write(Recipes.Count);
-        foreach (Recipe recipe in Recipes)
+        foreach (PinnedRecipeDTO recipe in Recipes)
         {
-            bw.Write(recipe.GetName());
+            bw.Write(recipe.Count);
+            bw.Write(recipe.Recipe.GetName());
         }
     }
 
@@ -161,9 +202,12 @@ public class PinRecipesManager
         int count = br.ReadInt32();
         for (int index = 0; index < count; ++index)
         {
+            int multiply = 1;
+            if (CurrentFileVersion > 1)
+                multiply = br.ReadInt32();
             string name = br.ReadString();
             if (CraftingManager.GetRecipe(name) is Recipe recipe) {
-                Recipes.Add(recipe);
+                Recipes.Add(new PinnedRecipeDTO(recipe, multiply));
             }
         }
     }

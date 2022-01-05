@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System;
 using System.Reflection;
 
 public class PinRecipes : IModApi
@@ -39,13 +40,30 @@ public class PinRecipes : IModApi
     public class XUiC_ItemActionList_SetCraftingActionList
     {
         static void Postfix(XUiC_ItemActionList __instance,
+            XUiC_RecipeCraftCount ___craftCountControl,
             XUiController itemController)
         {
             if (itemController is XUiC_RecipeEntry xuiCRecipeEntry)
             {
                 if (xuiCRecipeEntry.Recipe == null || xuiCRecipeEntry.Recipe.materialBasedRecipe) return;
-                __instance.AddActionListEntry(new ItemActionEntryPinRecipes(itemController, xuiCRecipeEntry.Recipe));
+                __instance.AddActionListEntry(new ItemActionEntryPinRecipes(itemController,
+                    xuiCRecipeEntry.Recipe, ___craftCountControl));
             }
+        }
+    }
+
+    // This patch is somewhat ambivalent, since it seems
+    // to be called too often, but only if the UI is shown.
+    // So still acceptable as regular CPU load is zero.
+    // It does seem to be to "one hook to solve it all"
+    [HarmonyPatch(typeof(GUIWindowManager))]
+    [HarmonyPatch("OnGUI")]
+    public class XUiC_Backpack_Open
+    {
+        static void Postfix()
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.SetWidgetsDirty();
         }
     }
 

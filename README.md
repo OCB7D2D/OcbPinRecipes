@@ -8,6 +8,10 @@ A small harmony mod enabling to pin recipes on the UI.
 
 ## Changelog
 
+### Version 0.3.0
+
+- Added craft to clear recipe button
+
 ### Version 0.2.0
 
 - Persist pinned recipes over sessions
