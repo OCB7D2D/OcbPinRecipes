@@ -25,6 +25,7 @@ public class XUiC_PinnedRecipeIngredient : XUiController
 
     public override void Update(float _dt)
     {
+        base.Update(_dt);
         if (IsDirty == false) return;
         if (!XUi.IsGameRunning()) return;
         ViewComponent.IsVisible = IsVisible();
@@ -33,7 +34,6 @@ public class XUiC_PinnedRecipeIngredient : XUiController
         Available = GetAvailable();
         Needed = GetNeeded();
         RefreshBindings();
-        base.Update(_dt);
         IsDirty = false;
     }
 

@@ -37,18 +37,19 @@ public class PinRecipesManager
     {
         foreach (var widget in widgets)
             widget.SetAllChildrenDirty(true);
+        IsDirty = true;
     }
 
     public void RegisterWidget(XUiController widget)
     {
         widgets.Add(widget);
-        widget.SetAllChildrenDirty(true);
+        SetWidgetsDirty();
     }
 
     public void UnregisterWidget(XUiController widget)
     {
         widgets.Remove(widget);
-        widget.SetAllChildrenDirty(true);
+        SetWidgetsDirty();
     }
 
     public void PinRecipe(Recipe recipe, int count = 1)

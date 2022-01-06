@@ -144,12 +144,12 @@ public class XUiC_PinnedRecipe : XUiController
 
     public override void Update(float _dt)
     {
+        base.Update(_dt);
         if (IsDirty == false) return;
         if (!XUi.IsGameRunning()) return;
         ViewComponent.IsVisible =
             (GetRecipe() != null);
         RefreshBindings();
-        base.Update(_dt);
         IsDirty = false;
     }
 

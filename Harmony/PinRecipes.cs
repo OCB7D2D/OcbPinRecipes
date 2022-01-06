@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 public class PinRecipes : IModApi
@@ -58,10 +59,11 @@ public class PinRecipes : IModApi
     // It does seem to be to "one hook to solve it all"
     [HarmonyPatch(typeof(GUIWindowManager))]
     [HarmonyPatch("OnGUI")]
-    public class XUiC_Backpack_Open
+    public class GUIWindowManager_OnGUI
     {
-        static void Postfix()
+        static void Prefix(List<GUIWindow> ___windowsToOpen)
         {
+            if (___windowsToOpen.Count == 0) return;
             if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.SetWidgetsDirty();
         }

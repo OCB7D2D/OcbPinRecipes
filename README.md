@@ -23,6 +23,11 @@ here on GitHub if you find any issues with it.
 
 ## Changelog
 
+### Version 0.3.1
+
+- Fix frame-drop issue (called update to often)
+- Little UI cleanup (got rid of sprite backgrounds)
+
 ### Version 0.3.0
 
 - Amount of items is now also pinned

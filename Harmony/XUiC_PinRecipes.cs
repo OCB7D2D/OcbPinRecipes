@@ -56,10 +56,10 @@ public class XUiC_PinRecipes : XUiController
 
     public override void Update(float _dt)
     {
+        base.Update(_dt);
         if (!XUi.IsGameRunning()) return;
         if (IsDirty == false) return;
         RefreshBindings();
-        base.Update(_dt);
         IsDirty = false;
     }
 
