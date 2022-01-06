@@ -113,6 +113,9 @@ public class XUiC_PinnedRecipeIngredient : XUiController
             case "delta":
                 value = (Needed - Available).ToString();
                 return true;
+            case "excess":
+                value = (Available - Needed).ToString();
+                return true;
             case "icon":
                 value = GetIcon();
                 return true;
@@ -127,6 +130,9 @@ public class XUiC_PinnedRecipeIngredient : XUiController
                 return true;
             case "hasEnough":
                 value = (Available >= Needed).ToString();
+                return true;
+            case "hasExcess":
+                value = (Available > Needed).ToString();
                 return true;
             case "textColor":
                 // int delta = Needed - Available;

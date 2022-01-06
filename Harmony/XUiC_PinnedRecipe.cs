@@ -113,9 +113,9 @@ public class XUiC_PinnedRecipe : XUiController
         // if (childByType != null) flag2 |= childByType.HasItems(recipe.ingredients, count2);
         if (craftWin.AddItemToQueue(_recipe, muliplier))
         {
-            if (craftWin is XUiC_WorkstationWindowGroup)
+            if (craftWin is XUiC_WorkstationWindowGroup workstation)
             {
-                if (FieldFuelWindow.GetValue(craftWin) is XUiC_WorkstationFuelGrid grid)
+                if (FieldFuelWindow.GetValue(workstation) is XUiC_WorkstationFuelGrid grid)
                 {
                     grid.TurnOn();
                 }

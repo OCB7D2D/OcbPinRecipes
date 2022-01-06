@@ -27,6 +27,7 @@ here on GitHub if you find any issues with it.
 
 - Fixed missing update when fuel is added
 - Auto enable campfire when enqueuing recipe
+- Add excess material label to show surplus
 
 ### Version 0.3.1
 

@@ -78,6 +78,9 @@
 				<label depth="6" name="count" pos="15,-15" text="{delta}" font_size="18" visible="{needsMore}" foregroundlayer="true"
 					   width="30" height="30" justify="center" pivot="center" effect="Outline" color="{textColor}"
 					   crispness="Always" effect_distance="1,1" effect_color="20,20,20,230" />
+				<label depth="7" name="count" pos="15,-15" text="{excess}" font_size="14" visible="{hasExcess}" foregroundlayer="true"
+					   width="30" height="30" justify="center" pivot="center" effect="Outline" color="180,240,180,240"
+					   crispness="Always" effect_distance="1,1" effect_color="20,20,20,230" />
 			</rect>
 		</pinned_recipe_igredient_row>
 
