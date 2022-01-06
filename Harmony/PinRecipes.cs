@@ -69,6 +69,17 @@ public class PinRecipes : IModApi
         }
     }
 
+    [HarmonyPatch(typeof(XUiC_WorkstationFuelGrid))]
+    [HarmonyPatch("HandleSlotChangedEvent")]
+    public class XUiC_WorkstationFuelGrid_HandleSlotChangedEvent
+    {
+        static void Postfix()
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.SetWidgetsDirty();
+        }
+    }
+
     [HarmonyPatch(typeof(PlayerDataFile))]
     [HarmonyPatch("Write")]
     public class PlayerDataFile_Write

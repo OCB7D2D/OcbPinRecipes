@@ -23,6 +23,11 @@ here on GitHub if you find any issues with it.
 
 ## Changelog
 
+### Version 0.3.2
+
+- Fixed missing update when fuel is added
+- Auto enable campfire when enqueuing recipe
+
 ### Version 0.3.1
 
 - Fix frame-drop issue (called update to often)

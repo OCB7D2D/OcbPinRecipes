@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using HarmonyLib;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public class XUiC_PinnedRecipe : XUiController
@@ -28,6 +30,8 @@ public class XUiC_PinnedRecipe : XUiController
     {
         PinRecipesManager.Instance.UnpinRecipe(Slot);
     }
+
+    static readonly FieldInfo FieldFuelWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "fuelWindow");
 
     private void OnCraft(XUiController _sender, int _mouseButton)
     {
@@ -109,6 +113,15 @@ public class XUiC_PinnedRecipe : XUiController
         // if (childByType != null) flag2 |= childByType.HasItems(recipe.ingredients, count2);
         if (craftWin.AddItemToQueue(_recipe, muliplier))
         {
+            if (craftWin is XUiC_WorkstationWindowGroup)
+            {
+                if (FieldFuelWindow.GetValue(craftWin) is XUiC_WorkstationFuelGrid grid)
+                {
+                    grid.TurnOn();
+                }
+            }
+            // Should trigger to turn it on
+            // craftWin.AddItemToQueue(null);
             // if (childByType != null) childByType.
             //   RemoveItems(_recipe.ingredients, multiplier);
             // else
