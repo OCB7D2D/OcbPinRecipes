@@ -63,10 +63,25 @@ public class XUiC_PinRecipes : XUiController
         IsDirty = false;
     }
 
-    // public override bool GetBindingValue(ref string value, string bindingName)
-    // {
-    //     value = "";
-    //     return false;
-    // }
+    public override bool GetBindingValue(ref string value, string bindingName)
+    {
+        switch (bindingName)
+        {
+            case "hasPinnedRecipe":
+                if (PinRecipesManager.HasInstance)
+                    (PinRecipesManager.Instance.Recipes.Count > 0).ToString();
+                else
+                    value = "false";
+                return true;
+            case "pinCount":
+                if (PinRecipesManager.HasInstance)
+                    PinRecipesManager.Instance.Recipes.Count.ToString();
+                else
+                    value = "0";
+                return true;
+        }
+        value = "";
+        return false;
+    }
 
 }
