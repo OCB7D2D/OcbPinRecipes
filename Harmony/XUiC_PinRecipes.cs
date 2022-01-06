@@ -40,18 +40,21 @@ public class XUiC_PinRecipes : XUiController
         PinRecipesManager.Instance.UnregisterWidget(this);
     }
 
-    private void OnQuestEvent(string _)
+    private void OnQuestEvent(string window)
     {
-        SetAllChildrenDirty(true);
-        if (PinRecipesManager.HasInstance)
-            PinRecipesManager.Instance.SetWidgetsDirty();
+        if (window == "compass")
+        {
+            if (PinRecipesManager.HasInstance)
+                PinRecipesManager.Instance.SetWidgetsDirty();
+            IsDirty = true;
+        }
     }
 
     private void OnInventoryEvent()
     {
-        SetAllChildrenDirty(true);
         if (PinRecipesManager.HasInstance)
             PinRecipesManager.Instance.SetWidgetsDirty();
+        IsDirty = true;
     }
 
     public override void Update(float _dt)

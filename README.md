@@ -25,6 +25,10 @@ here on GitHub if you find any issues with it.
 
 ### Version 0.3.2
 
+- Optimize CPU usage further (less fps drain)
+
+### Version 0.3.2
+
 - Fixed missing update when fuel is added
 - Auto enable campfire when enqueuing recipe
 - Add excess material label to show surplus

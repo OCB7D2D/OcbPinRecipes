@@ -63,7 +63,8 @@ public class PinRecipes : IModApi
     {
         static void Prefix(List<GUIWindow> ___windowsToOpen)
         {
-            if (___windowsToOpen.Count == 0) return;
+            if (!___windowsToOpen.Exists(win =>
+                { return win.Id == "backpack"; })) return;
             if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.SetWidgetsDirty();
         }
