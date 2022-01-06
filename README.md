@@ -10,6 +10,9 @@ use it in that setup, to persist pinned recipes for users.
 
 ![In-Game Pinned Recipes](Screens/in-game-screen-pins.jpg)
 
+Tip: Set your UI foreground opacity in video settings to 95%.
+Otherwise all foreground items are forced to be fully opaque.
+
 ![In-Game Details Pinned](Screens/in-game-left-pins.png)
 
 The craft & clear button is still a bit experimental, as
@@ -24,6 +27,8 @@ here on GitHub if you find any issues with it.
 
 - Amount of items is now also pinned
 - Added craft & clear recipe button
+- Added increment/decrement buttons
+- Only show action buttons when station is open
 - Refactored data persisting to work on server
 - Old pinned recipes will be lost on upgrade
 

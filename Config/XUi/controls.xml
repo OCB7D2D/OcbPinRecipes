@@ -12,32 +12,31 @@
 					<sprite depth="2" width="30" height="30" atlas="ItemIconAtlas"
 							foregroundlayer="true" globalopacitymod="0.9"
 							sprite="{icon}" color="{iconTint}" />
-					<label depth="3" name="count" pos="27,-30" text="{amount}" font_size="16" visible="true" foregroundlayer="true"
-						   width="30" height="20" justify="right" pivot="BottomRight" effect="Outline" color="[white]" effect_color="[darkGrey]"/>
+					<label depth="3" name="count" pos="3,-2" text="{amount}" font_size="14" visible="true" foregroundlayer="true" crispness="Always" effect_distance="1,1"
+						   width="26" height="20" justify="left" pivot="TopLeft" effect="Outline" color="240,240,240,248" effect_color="20,20,20,230"/>
 
 					<label depth="6" pos="95,-15" text="{title}" font_size="18"
 						   width="120" height="30" justify="left" pivot="center"
-					       effect="None" color="[white]" foregroundlayer="true"/>
+					       effect="None" color="220,220,220,240" foregroundlayer="true"/>
 
-					<button depth="13" pos="20,-8" width="10" height="10"
+					<button depth="13" pos="8,-22" width="10" height="10"
+							name="Increment" type="sliced" hoverscale="1.2"
+							sprite="ui_game_symbol_increment"
+							defaultcolor="220,220,220,180"
+							justify="center" pivot="center"
+							sound="[paging_click]"
+							foregroundlayer="true"
+							visible="{hasCraftArea}"
+							tooltip_key="xuiIncrement" />
+					<button depth="13" pos="22,-22" width="10" height="10"
 							name="Decrement" type="sliced" hoverscale="1.2"
 							sprite="ui_game_symbol_decrement"
 							defaultcolor="240,240,240,180"
 							justify="center" pivot="center"
 							sound="[paging_click]"
 							foregroundlayer="true"
-							visible="{canDecrement}"
+							visible="{showDecrement}"
 							tooltip_key="xuiDecrement" />
-
-					<button depth="13" pos="8,-8" width="10" height="10"
-							name="Increment" type="sliced" hoverscale="1.2"
-							sprite="ui_game_symbol_increment"
-							defaultcolor="240,240,240,180"
-							justify="center" pivot="center"
-							sound="[paging_click]"
-							foregroundlayer="true"
-							tooltip_key="xuiIncrement" />
-
 					<button depth="14" pos="162,-8" width="10" height="10"
 							name="Unpin" type="sliced" hoverscale="1.2"
 							sprite="ui_game_symbol_x"
@@ -45,6 +44,7 @@
 							justify="center" pivot="center"
 							sound="[paging_click]"
 							foregroundlayer="true"
+							visible="{hasCraftArea}"
 							tooltip_key="xuiUnpinRecipe" />
 					<button depth="15" pos="162,-22" width="10" height="10"
 							name="Craft" type="sliced" hoverscale="1.2"
@@ -78,7 +78,8 @@
 				<sprite depth="5" width="20" height="20" pos="5,-5" foregroundlayer="true" globalopacitymod="0.8"
 						sprite="ui_game_symbol_check" visible="{hasEnough}" color="[green]"/>
 				<label depth="6" name="count" pos="15,-15" text="{delta}" font_size="18" visible="{needsMore}" foregroundlayer="true"
-					   width="30" height="30" justify="center" pivot="center" effect="Outline" color="{textColor}" effect_color="[darkGrey]"/>
+					   width="30" height="30" justify="center" pivot="center" effect="Outline" color="{textColor}"
+					   crispness="Always" effect_distance="1,1" effect_color="20,20,20,230" />
 			</rect>
 		</pinned_recipe_igredient_row>
 

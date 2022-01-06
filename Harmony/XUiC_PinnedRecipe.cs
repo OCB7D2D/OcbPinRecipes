@@ -135,10 +135,8 @@ public class XUiC_PinnedRecipe : XUiController
             unpin.OnPress += new XUiEvent_OnPressEventHandler(OnUnpin);
         if (GetChildById("Decrement") is XUiController decrement)
             decrement.OnPress += new XUiEvent_OnPressEventHandler(OnDecrement);
-
         if (GetChildById("Increment") is XUiController increment)
             increment.OnPress += new XUiEvent_OnPressEventHandler(OnIncrement);
-
         if (GetChildById("Craft") is XUiController craft)
             craft.OnPress += new XUiEvent_OnPressEventHandler(OnCraft);
         IsDirty = true;
@@ -290,8 +288,12 @@ public class XUiC_PinnedRecipe : XUiController
             case "canCraft":
                 value = CanCraft().ToString();
                 return true;
-            case "canDecrement":
-                value = (GetRecipeCount() > 1).ToString();
+            case "showDecrement":
+                value = (GetRecipeCount() > 1 &&
+                    GetOpenCraftingWindow() != null).ToString();
+                return true;
+            case "hasCraftArea":
+                value = (GetOpenCraftingWindow() != null).ToString();
                 return true;
         }
         value = "";
