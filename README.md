@@ -23,7 +23,15 @@ here on GitHub if you find any issues with it.
 
 ## Changelog
 
-### Version 0.3.2
+### Version 0.3.4
+
+- Moved `hasCraftArea` binding to root UI element
+- Ditched fuel requirement to enqueue item to craft
+- Moved some shared methods to PinRecipesManager
+- Optimize updates to include all item stack changes
+- Optimize and cache a few expensive calls
+
+### Version 0.3.3
 
 - Optimize CPU usage further (less fps drain)
 

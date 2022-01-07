@@ -17,9 +17,7 @@ public class XUiC_PinnedRecipeIngredient : XUiController
     private static readonly PinRecipesManager PinManager = PinRecipesManager.Instance;
 
     // Cached values
-    private Recipe recipe;
     private ItemStack ingredient;
-    private int amount;
 
     public override void Init()
     {
@@ -45,8 +43,6 @@ public class XUiC_PinnedRecipeIngredient : XUiController
         base.Update(_dt);
         if (IsDirty == false) return;
         if (!XUi.IsGameRunning()) return;
-        recipe = PinManager.GetRecipe(Slot);
-        amount = PinManager.GetRecipeCount(Slot);
         ingredient = PinManager.GetRecipeIngredient(Slot, Index);
         ViewComponent.IsVisible = IsVisible();
         ViewComponent.ToolTip = GetTitle();

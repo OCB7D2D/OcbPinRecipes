@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
+﻿using HarmonyLib;
+using System.Collections.Generic;
+using System.Reflection;
 
 public class PinRecipesManager
 {
@@ -31,6 +31,57 @@ public class PinRecipesManager
     private PinRecipesManager()
     {
         instance = this;
+    }
+
+    private static List<XUiC_CraftingWindowGroup> windows;
+
+    public static XUiC_CraftingWindowGroup GetOpenCraftingWindow(XUi xui)
+    {
+        if (instance == null)
+            return null;
+        if (windows == null)
+        {
+            windows = new List<XUiC_CraftingWindowGroup>();
+            foreach (var window in xui.GetChildrenByType<XUiC_CraftingWindowGroup>())
+            {
+                if (window.WindowGroup == null) continue;
+                windows.Add(window);
+            }
+
+        }
+        foreach (var window in windows)
+        {
+            if (!window.WindowGroup.isShowing) continue;
+            return window;
+        }
+        return null;
+    }
+
+    static readonly FieldInfo FieldToolWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "toolWindow");
+    static readonly FieldInfo FieldInputWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "inputWindow");
+    static readonly FieldInfo FieldOutputWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "outputWindow");
+    static readonly FieldInfo FieldFuelWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "fuelWindow");
+
+    public static bool CraftingRequirementsValid(XUiC_WorkstationWindowGroup win, Recipe recipe, bool includeFuel = false)
+    {
+        if (FieldToolWindow.GetValue(win) is XUiC_WorkstationToolGrid tools)
+            if (tools != null && !tools.HasRequirement(recipe)) return false;
+        if (FieldInputWindow.GetValue(win) is XUiC_WorkstationInputGrid input)
+            if (input != null && !input.HasRequirement(recipe)) return false;
+        if (FieldOutputWindow.GetValue(win) is XUiC_WorkstationOutputGrid output)
+            if (output != null && !output.HasRequirement(recipe)) return false;
+        if (includeFuel && FieldFuelWindow.GetValue(win) is XUiC_WorkstationFuelGrid fuel)
+            if (fuel != null && !fuel.HasRequirement(recipe)) return false;
+        return true;
+    }
+
+    public static bool CraftingRequirementsValid(XUiC_CraftingWindowGroup win, Recipe recipe, bool includeFuel = false)
+    {
+        if (win is XUiC_WorkstationWindowGroup workstation)
+        {
+            return CraftingRequirementsValid(workstation, recipe, includeFuel);
+        }
+        return true;
     }
 
     public void SetWidgetsDirty()

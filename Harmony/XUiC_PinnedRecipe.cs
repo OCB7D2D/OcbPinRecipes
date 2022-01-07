@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
-using UnityEngine;
 
 public class XUiC_PinnedRecipe : XUiController
 {
@@ -39,13 +38,14 @@ public class XUiC_PinnedRecipe : XUiController
     private void OnCraft(XUiController _sender, int _mouseButton)
     {
         // Try to get the crafting window (only have one!?)
-        XUiC_CraftingWindowGroup craftWin = GetOpenCraftingWindow();
+        XUiC_CraftingWindowGroup craftWin = 
+            PinRecipesManager.GetOpenCraftingWindow(xui);
         if (craftWin == null) return;
 
         // Check if the recipe is actually unlocked
         if (!XUiM_Recipes.GetRecipeIsUnlocked(xui, recipe)) return;
         // EntityPlayerLocal entityPlayer = xui.playerUI.entityPlayer;
-        if (!craftWin.CraftingRequirementsValid(recipe)) return;
+        if (!PinRecipesManager.CraftingRequirementsValid(craftWin, recipe)) return;
         // ItemClass klass = ItemClass.GetForId(recipe.itemValueType);
 
         // Get the crafting tier to apply effects
@@ -117,7 +117,10 @@ public class XUiC_PinnedRecipe : XUiController
             {
                 if (FieldFuelWindow.GetValue(workstation) is XUiC_WorkstationFuelGrid grid)
                 {
-                    grid.TurnOn();
+                    if (PinRecipesManager.CraftingRequirementsValid(workstation, recipe, true))
+                    {
+                        grid.TurnOn();
+                    }
                 }
             }
             // Should trigger to turn it on
@@ -207,29 +210,7 @@ public class XUiC_PinnedRecipe : XUiController
         return recipe != null;
     }
 
-    private List<XUiC_CraftingWindowGroup> windows;
-
-    private XUiC_CraftingWindowGroup GetOpenCraftingWindow()
-    {
-        if (windows == null)
-        {
-            windows = new List<XUiC_CraftingWindowGroup>();
-            foreach (var window in xui.GetChildrenByType<XUiC_CraftingWindowGroup>())
-            {
-                if (window.WindowGroup == null) continue;
-                windows.Add(window);
-            }
-
-        }
-        foreach (var window in windows)
-        {
-            if (!window.WindowGroup.isShowing) continue;
-            return window;
-        }
-        return null;
-    }
-
-    private bool HasEnoughCraftingMaterials(XUiC_CraftingWindowGroup win, Recipe recipe)
+    private bool HasEnoughCraftingMaterials(Recipe recipe)
     {
         if (recipe == null) return false;
         for (int idx = 0; idx < recipe.ingredients.Count; idx += 1)
@@ -283,12 +264,12 @@ public class XUiC_PinnedRecipe : XUiController
     private bool CanCraft()
     {
         if (recipe == null) return false;
-        var craftWin = GetOpenCraftingWindow();
+        var craftWin = PinRecipesManager.GetOpenCraftingWindow(xui);
         if (craftWin == null) return false;
         if (!XUiM_Recipes.GetRecipeIsUnlocked(xui, recipe)) return false;
-        if (!craftWin.CraftingRequirementsValid(recipe)) return false;
+        if (!PinRecipesManager.CraftingRequirementsValid(craftWin, recipe)) return false;
         if (!IsCorrectCraftingArea(craftWin, recipe)) return false;
-        if (!HasEnoughCraftingMaterials(craftWin, recipe)) return false;
+        if (!HasEnoughCraftingMaterials(recipe)) return false;
         return true;
     }
 
@@ -315,11 +296,8 @@ public class XUiC_PinnedRecipe : XUiController
                 value = CanCraft().ToString();
                 return true;
             case "showDecrement":
-                value = (amount > 1 &&
-                    GetOpenCraftingWindow() != null).ToString();
-                return true;
-            case "hasCraftArea":
-                value = (GetOpenCraftingWindow() != null).ToString();
+                value = (amount > 1 && PinRecipesManager.
+                    GetOpenCraftingWindow(xui) != null).ToString();
                 return true;
         }
         value = "";

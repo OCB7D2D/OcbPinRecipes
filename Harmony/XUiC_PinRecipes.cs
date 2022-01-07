@@ -82,6 +82,9 @@ public class XUiC_PinRecipes : XUiController
                 else
                     value = "0";
                 return true;
+            case "hasCraftArea":
+                value = (PinRecipesManager.GetOpenCraftingWindow(xui) != null).ToString();
+                return true;
         }
         value = "";
         return false;

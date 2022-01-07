@@ -1,7 +1,8 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
+
+#pragma warning disable IDE0051 // Remove unused private members
 
 public class PinRecipes : IModApi
 {

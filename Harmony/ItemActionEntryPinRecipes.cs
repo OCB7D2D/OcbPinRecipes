@@ -1,11 +1,10 @@
-﻿using UnityEngine;
-
-public class ItemActionEntryPinRecipes : BaseItemActionEntry
+﻿public class ItemActionEntryPinRecipes : BaseItemActionEntry
 {
 
-    // Recipe attach to this action
-    private Recipe Recipe;
-    private XUiC_RecipeCraftCount Counter;
+    // Recipe attached to this action
+    private readonly Recipe Recipe;
+    // Amount of items to be built in total
+    private readonly XUiC_RecipeCraftCount Counter;
 
     public ItemActionEntryPinRecipes(XUiController controller, Recipe recipe, XUiC_RecipeCraftCount counter) :
         base(controller, "lblContextActionPinRecipe", "ui_game_symbol_pin", GamepadShortCut.DPadLeft)
