@@ -16,6 +16,9 @@ public class XUiC_PinnedRecipe : XUiController
         = new CachedStringFormatterXuiRgbaColor();
     private static readonly PinRecipesManager PinManager = PinRecipesManager.Instance;
 
+    private Recipe recipe;
+    private int amount;
+
     private void OnIncrement(XUiController _sender, int _mouseButton)
     {
         PinRecipesManager.Instance.IncrementCount(Slot);
@@ -35,8 +38,6 @@ public class XUiC_PinnedRecipe : XUiController
 
     private void OnCraft(XUiController _sender, int _mouseButton)
     {
-        Recipe recipe = GetRecipe();
-
         // Try to get the crafting window (only have one!?)
         XUiC_CraftingWindowGroup craftWin = GetOpenCraftingWindow();
         if (craftWin == null) return;
@@ -107,11 +108,10 @@ public class XUiC_PinnedRecipe : XUiController
             }
         }
 
-        int muliplier = GetRecipeCount();
-        if (!xui.PlayerInventory.HasItems(_recipe.ingredients, muliplier)) return;
+        if (!xui.PlayerInventory.HasItems(_recipe.ingredients, amount)) return;
         // XUiC_WorkstationInputGrid childByType = this.craftCountControl.WindowGroup.Controller.GetChildByType<XUiC_WorkstationInputGrid>();
         // if (childByType != null) flag2 |= childByType.HasItems(recipe.ingredients, count2);
-        if (craftWin.AddItemToQueue(_recipe, muliplier))
+        if (craftWin.AddItemToQueue(_recipe, amount))
         {
             if (craftWin is XUiC_WorkstationWindowGroup workstation)
             {
@@ -125,13 +125,26 @@ public class XUiC_PinnedRecipe : XUiController
             // if (childByType != null) childByType.
             //   RemoveItems(_recipe.ingredients, multiplier);
             // else
-            xui.PlayerInventory.RemoveItems(_recipe.ingredients, muliplier);
+            xui.PlayerInventory.RemoveItems(_recipe.ingredients, amount);
             PinRecipesManager.Instance.UnpinRecipe(Slot);
         }
         // else WarnQueueFull();
         craftWin.WindowGroup.Controller.SetAllChildrenDirty();
         SetAllChildrenDirty();
     }
+
+    public override void OnOpen()
+    {
+        base.OnOpen();
+        PinRecipesManager.Instance.RegisterWidget(this);
+    }
+
+    public override void OnClose()
+    {
+        base.OnClose();
+        PinRecipesManager.Instance.UnregisterWidget(this);
+    }
+
 
     public override void Init()
     {
@@ -160,24 +173,16 @@ public class XUiC_PinnedRecipe : XUiController
         base.Update(_dt);
         if (IsDirty == false) return;
         if (!XUi.IsGameRunning()) return;
+        recipe = PinManager.GetRecipe(Slot);
+        amount = PinManager.GetRecipeCount(Slot);
         ViewComponent.IsVisible =
-            (GetRecipe() != null);
+            (recipe != null);
         RefreshBindings();
         IsDirty = false;
     }
 
-    private Recipe GetRecipe()
-    {
-        return PinManager.GetRecipe(Slot);
-    }
-    private int GetRecipeCount()
-    {
-        return PinManager.GetRecipeCount(Slot);
-    }
-
     private string GetIcon()
     {
-        Recipe recipe = GetRecipe();
         if (recipe == null) return string.Empty;
         ItemValue itemValue = new ItemValue(recipe.itemValueType);
         return itemValue.GetPropertyOverride("CustomIcon",
@@ -186,14 +191,12 @@ public class XUiC_PinnedRecipe : XUiController
 
     private string GetTitle()
     {
-        Recipe recipe = GetRecipe();
         if (recipe == null) return string.Empty;
         return Localization.Get(recipe.GetName());
     }
 
     private string GetIconTint()
     {
-        Recipe recipe = GetRecipe();
         if (recipe == null) return string.Empty;
         ItemValue itemValue = new ItemValue(recipe.itemValueType);
         return colorFormatter.Format(itemValue.ItemClass.GetIconTint(itemValue));
@@ -201,14 +204,25 @@ public class XUiC_PinnedRecipe : XUiController
 
     private bool IsVisible()
     {
-        return GetRecipe() != null;
+        return recipe != null;
     }
+
+    private List<XUiC_CraftingWindowGroup> windows;
 
     private XUiC_CraftingWindowGroup GetOpenCraftingWindow()
     {
-        foreach (var window in xui.GetChildrenByType<XUiC_CraftingWindowGroup>())
+        if (windows == null)
         {
-            if (window.WindowGroup == null) continue;
+            windows = new List<XUiC_CraftingWindowGroup>();
+            foreach (var window in xui.GetChildrenByType<XUiC_CraftingWindowGroup>())
+            {
+                if (window.WindowGroup == null) continue;
+                windows.Add(window);
+            }
+
+        }
+        foreach (var window in windows)
+        {
             if (!window.WindowGroup.isShowing) continue;
             return window;
         }
@@ -268,7 +282,6 @@ public class XUiC_PinnedRecipe : XUiController
 
     private bool CanCraft()
     {
-        Recipe recipe = GetRecipe();
         if (recipe == null) return false;
         var craftWin = GetOpenCraftingWindow();
         if (craftWin == null) return false;
@@ -293,7 +306,7 @@ public class XUiC_PinnedRecipe : XUiController
                 value = GetIconTint();
                 return true;
             case "amount":
-                value = GetRecipeCount().ToString();
+                value = amount.ToString();
                 return true;
             case "isVisible":
                 value = IsVisible().ToString();
@@ -302,7 +315,7 @@ public class XUiC_PinnedRecipe : XUiController
                 value = CanCraft().ToString();
                 return true;
             case "showDecrement":
-                value = (GetRecipeCount() > 1 &&
+                value = (amount > 1 &&
                     GetOpenCraftingWindow() != null).ToString();
                 return true;
             case "hasCraftArea":

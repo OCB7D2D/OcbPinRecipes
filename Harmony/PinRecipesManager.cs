@@ -36,7 +36,7 @@ public class PinRecipesManager
     public void SetWidgetsDirty()
     {
         foreach (var widget in widgets)
-            widget.SetAllChildrenDirty(true);
+            widget.IsDirty = true;
         IsDirty = true;
     }
 

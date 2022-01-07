@@ -16,6 +16,11 @@ public class XUiC_PinnedRecipeIngredient : XUiController
         = new CachedStringFormatterXuiRgbaColor();
     private static readonly PinRecipesManager PinManager = PinRecipesManager.Instance;
 
+    // Cached values
+    private Recipe recipe;
+    private ItemStack ingredient;
+    private int amount;
+
     public override void Init()
     {
         base.Init();
@@ -23,52 +28,49 @@ public class XUiC_PinnedRecipeIngredient : XUiController
         IsDirty = true;
     }
 
+    public override void OnOpen()
+    {
+        base.OnOpen();
+        PinRecipesManager.Instance.RegisterWidget(this);
+    }
+
+    public override void OnClose()
+    {
+        base.OnClose();
+        PinRecipesManager.Instance.UnregisterWidget(this);
+    }
+
     public override void Update(float _dt)
     {
         base.Update(_dt);
         if (IsDirty == false) return;
         if (!XUi.IsGameRunning()) return;
+        recipe = PinManager.GetRecipe(Slot);
+        amount = PinManager.GetRecipeCount(Slot);
+        ingredient = PinManager.GetRecipeIngredient(Slot, Index);
         ViewComponent.IsVisible = IsVisible();
         ViewComponent.ToolTip = GetTitle();
-        ViewComponent.IsDirty = true;
+        // ViewComponent.IsDirty = true;
         Available = GetAvailable();
         Needed = GetNeeded();
         RefreshBindings();
         IsDirty = false;
     }
 
-    private Recipe GetRecipe()
-    {
-        return PinManager.GetRecipe(Slot);
-    }
-
-    private int GetRecipeCount()
-    {
-        return PinManager.GetRecipeCount(Slot);
-    }
-
-    private ItemStack GetIngredient()
-    {
-        return PinManager.GetRecipeIngredient(Slot, Index);
-    }
-
     private string GetName()
     {
-        ItemStack ingredient = GetIngredient();
         if (ingredient == null) return string.Empty;
         return ingredient.itemValue.ItemClass.GetItemName();
     }
 
     private string GetTitle()
     {
-        ItemStack ingredient = GetIngredient();
         if (ingredient == null) return string.Empty;
         return ingredient.itemValue.ItemClass.GetLocalizedItemName();
     }
 
     private string GetIcon()
     {
-        ItemStack ingredient = GetIngredient();
         if (ingredient == null) return string.Empty;
         return ingredient.itemValue.GetPropertyOverride("CustomIcon",
             ingredient.itemValue.ItemClass.GetIconName());
@@ -76,7 +78,6 @@ public class XUiC_PinnedRecipeIngredient : XUiController
 
     private string GetIconTint()
     {
-        ItemStack ingredient = GetIngredient();
         if (ingredient == null) return colorFormatter.Format(Color.white);
         return colorFormatter.Format(ingredient.itemValue.
             ItemClass.GetIconTint(ingredient.itemValue));
@@ -84,7 +85,7 @@ public class XUiC_PinnedRecipeIngredient : XUiController
 
     private bool IsVisible()
     {
-        return GetIngredient() != null;
+        return ingredient != null;
     }
 
     private int GetAvailable()
