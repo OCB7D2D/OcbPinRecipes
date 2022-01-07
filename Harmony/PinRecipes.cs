@@ -70,9 +70,9 @@ public class PinRecipes : IModApi
         }
     }
 
-    [HarmonyPatch(typeof(XUiC_WorkstationFuelGrid))]
-    [HarmonyPatch("HandleSlotChangedEvent")]
-    public class XUiC_WorkstationFuelGrid_HandleSlotChangedEvent
+    [HarmonyPatch(typeof(XUiC_ItemStack))]
+    [HarmonyPatch("set_ItemStack")]
+    public class ItemStack_Set_ItemStack
     {
         static void Postfix()
         {
