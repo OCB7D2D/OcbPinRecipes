@@ -85,26 +85,29 @@ public class XUiC_PinnedRecipe : XUiController
             // Count was adjusted by effect?
             if (count != ingredient.count)
                 _recipe.scrapable = true;
-            if (!ingredient.itemValue.HasQuality)
+            if (ingredient.itemValue.HasQuality)
             {
-                _recipe.AddIngredient(ingredient.itemValue, count);
+                // This branch is called for e.g. for car batteries
+                // Otherwise we don't give correct items back on cancel
+                List<ItemValue> available = new List<ItemValue>();
+                foreach (var itemStack in allItemStacks)
+                {
+                    if (itemStack.itemValue.type == ingredient.itemValue.type)
+                        available.Add(itemStack.itemValue.Clone());
+                }
+                available.Sort((a, b) => a.Quality - b.Quality);
+                int len = count == 0 ? 1 : count;
+                foreach (var item in available)
+                {
+                    if (item.type != ingredient.itemValue.type) continue;
+                    _recipe.AddIngredient(item, 1);
+                    if (--len == 0) break;
+                }
+                if (len != 0) return;
             }
             else
             {
-                Log.Warning("Ingredient without Quality found, use-case is untested");
-                Log.Warning("Please report detailed reproduction case to:");
-                Log.Error("https://github.com/OCB7D2D/OcbPinRecipes/issues");
-                // Code below is copied to my best knowledge (untested)
-                int len = count == 0 ? 1 : count;
-                for (int i = 0; i < len; ++i)
-                {
-                    foreach (var itemStack in allItemStacks)
-                    {
-                        if (itemStack.itemValue.type != ingredient.itemValue.type) continue;
-                        _recipe.AddIngredient(itemStack.itemValue.Clone(), 1);
-                        break;
-                    }
-                }
+                _recipe.AddIngredient(ingredient.itemValue, count);
             }
         }
 
