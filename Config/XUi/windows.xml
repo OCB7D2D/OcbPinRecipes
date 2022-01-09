@@ -2,10 +2,10 @@
 
 	<append xpath="/windows">
 
-		<window anchor="LeftCenter" name="windowPinRecipes" visible="true">
+		<window anchor="RightCenter" name="windowPinRecipes" visible="true">
 
 
-				<grid rows="10" pos="0,420" width="170" height="700"
+				<grid rows="10" pos="-185,280" width="170" height="560"
 					  cell_height="70" cell_width="170" arrangement="vertical">
 
 					<pinned_recipe_row name="0" slot="0"/>
@@ -14,10 +14,6 @@
 					<pinned_recipe_row name="3" slot="3"/>
 					<pinned_recipe_row name="4" slot="4"/>
 					<pinned_recipe_row name="5" slot="5"/>
-					<pinned_recipe_row name="6" slot="6"/>
-					<pinned_recipe_row name="7" slot="7"/>
-					<pinned_recipe_row name="8" slot="8"/>
-					<pinned_recipe_row name="9" slot="9"/>
 
 				</grid>
 

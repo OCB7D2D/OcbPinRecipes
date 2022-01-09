@@ -23,6 +23,13 @@ here on GitHub if you find any issues with it.
 
 ## Changelog
 
+### Version 0.4.0
+
+- Move window to the right side for less UI interference
+- Reduce maximum amount of pinned recipes to 6
+- Fix edge case with ingredients that have qualities
+- Fix typo in controls.xml (pinned_recipe_ingredient_row)
+
 ### Version 0.3.4
 
 - Moved `hasCraftArea` binding to root UI element
