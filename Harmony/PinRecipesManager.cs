@@ -33,26 +33,14 @@ public class PinRecipesManager
         instance = this;
     }
 
-    private static List<XUiC_CraftingWindowGroup> windows;
-
     public static XUiC_CraftingWindowGroup GetOpenCraftingWindow(XUi xui)
     {
-        if (instance == null)
-            return null;
-        if (windows == null)
+        if (instance == null) return null;
+        foreach (var window in xui.GetChildrenByType<XUiC_CraftingWindowGroup>())
         {
-            windows = new List<XUiC_CraftingWindowGroup>();
-            foreach (var window in xui.GetChildrenByType<XUiC_CraftingWindowGroup>())
-            {
-                if (window.WindowGroup == null) continue;
-                windows.Add(window);
-            }
-
-        }
-        foreach (var window in windows)
-        {
-            if (!window.WindowGroup.isShowing) continue;
-            return window;
+            if (window == null) continue;
+            if (window.WindowGroup == null) continue;
+            if (window.WindowGroup.isShowing) return window;
         }
         return null;
     }

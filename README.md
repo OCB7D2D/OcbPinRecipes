@@ -25,6 +25,7 @@ here on GitHub if you find any issues with it.
 
 ### Version 0.4.0
 
+- Fix issue when loading another map (reloading xui)
 - Move window to the right side for less UI interference
 - Reduce maximum amount of pinned recipes to 6
 - Fix edge case with ingredients that have qualities
