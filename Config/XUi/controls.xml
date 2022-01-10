@@ -58,17 +58,17 @@
 				<rect depth="6" pos="3,-35" width="170" height="30">
 					<grid rows="5" width="170" height="30"
 						  cell_height="30" cell_width="35" arrangement="horizontal">
-						<pinned_recipe_igredient_row name="0" index="0"/>
-						<pinned_recipe_igredient_row name="1" index="1"/>
-						<pinned_recipe_igredient_row name="2" index="2"/>
-						<pinned_recipe_igredient_row name="3" index="3"/>
-						<pinned_recipe_igredient_row name="4" index="4"/>
+						<pinned_recipe_ingredient_row name="0" index="0"/>
+						<pinned_recipe_ingredient_row name="1" index="1"/>
+						<pinned_recipe_ingredient_row name="2" index="2"/>
+						<pinned_recipe_ingredient_row name="3" index="3"/>
+						<pinned_recipe_ingredient_row name="4" index="4"/>
 					</grid>
 				</rect>
 			</rect>
 		</pinned_recipe_row>
 
-		<pinned_recipe_igredient_row index="9999">
+		<pinned_recipe_ingredient_row index="9999">
 			<rect width="30" height="30" index="${index}" tooltip="tooltip"
 				  controller="XUiC_PinnedRecipeIngredient, PinRecipes">
 				<sprite depth="4" name="icon" width="30" height="30" pos="0,1" atlas="ItemIconAtlas"
@@ -82,8 +82,9 @@
 					   width="30" height="30" justify="center" pivot="center" effect="Outline" color="180,240,180,240"
 					   crispness="Always" effect_distance="1,1" effect_color="20,20,20,230" />
 			</rect>
-		</pinned_recipe_igredient_row>
+		</pinned_recipe_ingredient_row>
 
-	</append>
+	
+</append>
 		
 </configs>
