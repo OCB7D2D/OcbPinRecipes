@@ -13,7 +13,7 @@ use it in that setup, to persist pinned recipes for users.
 Tip: Set your UI foreground opacity in video settings to 95%.
 Otherwise all foreground items are forced to be fully opaque.
 
-![In-Game Details Pinned](Screens/in-game-left-pins.png)
+![In-Game Details Pinned](Screens/in-game-detail-pins.png)
 
 The craft & clear button is still a bit experimental, as
 I had to copy a bit more code than wanted in order to do
@@ -22,6 +22,11 @@ missed a few edge cases in that regard. Please report
 here on GitHub if you find any issues with it.
 
 ## Changelog
+
+### Version 0.4.1
+
+- Small UI adjustments for better readability
+- [Alternative bigger UI][1] added (thx tdrhart)
 
 ### Version 0.4.0
 
@@ -82,4 +87,4 @@ here on GitHub if you find any issues with it.
 
 I've developed and tested this Mod against version a20.b218.
 
-[1]: https://github.com/OCB7D2D/A20BepInExPreloader
+[1]: https://github.com/OCB7D2D/OcbPinRecipesUiTdrHart

@@ -87,7 +87,7 @@ public class XUiC_PinnedRecipe : XUiController
                 _recipe.scrapable = true;
             if (ingredient.itemValue.HasQuality)
             {
-                // This branch is called for e.g. for car batteries
+                // This branch is called for e.g. car batteries
                 // Otherwise we don't give correct items back on cancel
                 List<ItemValue> available = new List<ItemValue>();
                 foreach (var itemStack in allItemStacks)
