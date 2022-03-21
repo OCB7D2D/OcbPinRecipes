@@ -8,7 +8,7 @@ only version of this mod as it contains custom code. The mod
 must also be installed on dedicated servers if you want to
 use it in that setup, to persist pinned recipes for users.
 
-![In-Game Pinned Recipes](Screens/in-game-screen-pins.jpg)
+![In-Game Pinned Recipes](Screens/in-game-screen-pins.png)
 
 Tip: Set your UI foreground opacity in video settings to 95%.
 Otherwise all foreground items are forced to be fully opaque.
