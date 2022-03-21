@@ -3,7 +3,7 @@
 	<append xpath="/windows">
 		<window name="windowReciPin" anchor="RightCenter" visible="true">
 
-			<grid rows="10" pos="-234,400" width="235" height="425" cell_width="235" cell_height="70" arrangement="vertical">
+			<grid rows="10" pos="-234,370" width="235" height="425" cell_width="235" cell_height="70" arrangement="vertical">
 				<pinned_recipe_row name="0" slot="0"/>
 				<pinned_recipe_row name="1" slot="1"/>
 				<pinned_recipe_row name="2" slot="2"/>
