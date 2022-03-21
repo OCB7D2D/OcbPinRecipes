@@ -1,85 +1,39 @@
 <configs>
 
-	<!-- Pinnable Recipes -->
+<!-- ピン留めしたレシピウィンドウ -->
 	<append xpath="/controls">
 		<pinned_recipe_row slot="9999">
-			<rect depth="1" width="176" height="67" slot="${slot}"
-				  controller="XUiC_PinnedRecipe, PinRecipes">
-				<sprite pos="0,0" width="176" height="67" color="[black]" globalopacitymod="0.9" type="sliced" />
-				<sprite pos="1,-1" width="174" height="65" color="[lightGrey]" globalopacitymod="0.8" type="sliced" />
-				<rect depth="4" pos="3,-2" width="170" height="30">
+			<rect depth="1" width="235" height="70" slot="${slot}" controller="XUiC_PinnedRecipe, PinRecipes">
+				<sprite pos="0,0" sprite="ui_game_header_fill" width="235" height="70" color="100,100,100,120" type="sliced" />
+				<sprite pos="2,-2" sprite="ui_game_header_fill" width="231" height="66" color="0,0,0,200" type="sliced" />
+				<rect depth="4" pos="2,-2" width="231" height="66">
 
-					<!-- Main Icon of Pinned recipe -->
-					<sprite depth="2" atlas="ItemIconAtlas"
-					       pos="0,0" width="30" height="30"
-					       foregroundlayer="true" globalopacitymod="0.9"
-					       sprite="{icon}" color="{iconTint}" />
+<!-- 作成したいもののアイコン -->
+					<sprite depth="2" pos="4,-10" width="42" height="42" atlas="ItemIconAtlas" foregroundlayer="true" globalopacitymod="0.9" sprite="{icon}" color="{iconTint}" />
 
-					<!-- Label counting how many items of recipe to be crafted -->
-					<label depth="3" name="count" text="{amount}" visible="true"
-					       pos="3,-2" font_size="15" width="26" height="20"
-					       foregroundlayer="true" crispness="Always"
-					       effect="Outline" effect_color="20,20,20,230" effect_distance="1,1"
-					       justify="left" pivot="TopLeft"
-					       color="240,240,240,248"/>
+<!-- 作成したいもののテキスト表示 -->
+					<label depth="6" pos="52,-18" text="{title}" font_size="15"  width="175" height="35" justify="left" pivot="left" color="250,250,250,245" effect="Outline" effect_color="20,20,20,230" effect_distance="1,1" foregroundlayer="true" crispness="Always" visible="true" />
 
-					<!-- Label with the translated name of pinned recipe -->
-					<label depth="6" text="{title}"
-					       pos="95,-15" font_size="18" width="120" height="30"
-					       foregroundlayer="true" crispness="Always"
-					       justify="left" pivot="center" color="220,220,220,240"
-					       effect="outline" effect_color="20,20,20,230"
-					       visible="true" effect_distance="1,1" />
+<!-- 作成数 -->
+					<label depth="3" pos="15,-38" name="count" text="{amount}" font_size="26" width="30" height="30" justify="right" pivot="TopLeft" color="2555,255,0,240" effect="Outline" effect_color="0,0,0,250" effect_distance="1,1" foregroundlayer="true" crispness="Always" visible="true" />
 
-					<!-- Button to increment amount of items to be made -->
-					<button depth="13" pos="8,-22" width="10" height="10"
-					        name="Increment" type="sliced" hoverscale="1.2"
-					        sprite="ui_game_symbol_increment"
-					        defaultcolor="240,240,240,220"
-					        justify="center" pivot="center"
-					        sound="[paging_click]"
-					        foregroundlayer="true"
-					        visible="{hasCraftArea}"
-					        tooltip_key="xuiIncrement" />
+<!-- 作成数を増やすアイコン -->
+					<button depth="13" pos="10,-47" width="10" height="10" name="Increment" type="sliced" hoverscale="1.2" sprite="ui_game_symbol_increment" defaultcolor="240,240,240,230" justify="center" pivot="center" sound="[paging_click]" foregroundlayer="true" visible="{hasCraftArea}" tooltip_key="xuiIncrement" />
 
-					<!-- Button to decrement amount of items to be made -->
-					<button depth="13" pos="22,-22" width="10" height="10"
-					        name="Decrement" type="sliced" hoverscale="1.2"
-					        sprite="ui_game_symbol_decrement"
-					        defaultcolor="240,240,240,220"
-					        justify="center" pivot="center"
-					        sound="[paging_click]"
-					        foregroundlayer="true"
-					        visible="{showDecrement}"
-					        tooltip_key="xuiDecrement" />
+<!-- 作成数を減らすアイコン -->
+					<button depth="13" pos="10,-57" width="10" height="10" name="Decrement" type="sliced" hoverscale="1.2" sprite="ui_game_symbol_decrement" defaultcolor="240,240,240,230" justify="center" pivot="center" sound="[paging_click]" foregroundlayer="true" visible="{showDecrement}" tooltip_key="xuiDecrement" />
 
-					<!-- Button to unpin the recipe -->
-					<button depth="14" pos="162,-8" width="10" height="10"
-					        name="Unpin" type="sliced" hoverscale="1.2"
-					        sprite="ui_game_symbol_x"
-					        defaultcolor="240,80,80,220"
-					        justify="center" pivot="center"
-					        sound="[paging_click]"
-					        foregroundlayer="true"
-					        visible="{hasCraftArea}"
-					        tooltip_key="xuiUnpinRecipe" />
+<!-- ピン留め解除用アイコン -->
+					<button depth="14" pos="225,-8" width="16" height="16" name="Unpin" type="sliced" hoverscale="1.2" sprite="ui_game_symbol_pin" defaultcolor="240,100,100,250" justify="center" pivot="center" sound="[paging_click]" foregroundlayer="true" visible="{hasCraftArea}" tooltip_key="xuiUnpinRecipe" />
 
-					<!-- Button to craft the recipe -->
-					<button depth="15" pos="162,-22" width="10" height="10"
-					        name="Craft" type="sliced" hoverscale="1.2"
-					        sprite="ui_game_symbol_hammer"
-					        defaultcolor="90,248,90,240"
-					        justify="center" pivot="center"
-					        sound="[recipe_click]"
-					        foregroundlayer="true"
-					        visible="{canCraft}"
-					        tooltip_key="lblContextActionCraft" />
-
+<!-- 作成用アイコン -->
+					<button depth="15" pos="15,-15" width="20" height="20" name="Craft" type="sliced" hoverscale="1.2" sprite="ui_game_symbol_hammer" defaultcolor="90,248,90,240" justify="center" pivot="center" sound="[recipe_click]" foregroundlayer="true" visible="{canCraft}" tooltip_key="lblContextActionCraft" />
 				</rect>
 
-				<rect depth="6" pos="3,-35" width="170" height="30">
-					<grid rows="5" width="170" height="30"
-					      cell_height="30" cell_width="35" arrangement="horizontal">
+<!-- 素材を横に並べて表示 -->
+				<rect depth="6" pos="52,-36" width="180" height="30">
+					<grid rows="5" width="180" height="30"
+						  cell_height="30" cell_width="35" arrangement="horizontal">
 						<pinned_recipe_ingredient_row name="0" index="0"/>
 						<pinned_recipe_ingredient_row name="1" index="1"/>
 						<pinned_recipe_ingredient_row name="2" index="2"/>
@@ -87,23 +41,22 @@
 						<pinned_recipe_ingredient_row name="4" index="4"/>
 					</grid>
 				</rect>
-
 			</rect>
 		</pinned_recipe_row>
 
+<!-- 必要な素材のアイコン -->
 		<pinned_recipe_ingredient_row index="9999">
-			<rect width="30" height="30" index="${index}" tooltip="tooltip"
-			      controller="XUiC_PinnedRecipeIngredient, PinRecipes">
-				<sprite depth="4" name="icon" width="30" height="30" pos="0,1" atlas="ItemIconAtlas"
-				        sprite="{icon}" color="{iconTint}" foregroundlayer="true" globalopacitymod="0.95" />
-				<sprite depth="5" width="16" height="16" pos="7,-7" foregroundlayer="true" globalopacitymod="0.8"
-				        sprite="ui_game_symbol_check" visible="{hasEnough}" color="[green]"/>
-				<label depth="6" name="count" pos="15,-15" text="{delta}" font_size="18" visible="{needsMore}" foregroundlayer="true"
-				        width="30" height="30" justify="center" pivot="center" effect="outline" color="{textColor}"
-				        crispness="Always" effect_distance="1,1" effect_color="20,20,20,230" />
-				<label depth="7" name="count" pos="15,-15" text="{excess}" font_size="16" visible="{hasExcess}" foregroundlayer="true"
-				        width="30" height="30" justify="center" pivot="center" effect="outline" color="180,240,180,240"
-				        crispness="Always" effect_distance="1,1" effect_color="20,20,20,230" />
+			<rect width="29" height="29" index="${index}" tooltip="tooltip" controller="XUiC_PinnedRecipeIngredient, PinRecipes">
+				<sprite depth="4" name="icon" width="30" height="30" pos="0,1" atlas="ItemIconAtlas" sprite="{icon}" color="{iconTint}" foregroundlayer="true" globalopacitymod="0.95" />
+
+<!-- 必要十分 -->
+				<sprite depth="5" pos="1,5" width="18" height="18" foregroundlayer="true" globalopacitymod="0.8" sprite="ui_game_symbol_check" visible="{hasEnough}" color="0,255,0,150"/>
+
+<!-- 不足数表示 -->
+				<label depth="6" name="count" pos="27,-22" text="{delta}" font_size="23" visible="{needsMore}" foregroundlayer="true" width="35" height="35" justify="center" pivot="center" effect="Outline" color="255,0,0,240" crispness="Always" effect_distance="1,1" effect_color="240,240,240,255" />
+
+<!-- 余剰数表示 -->
+				<label depth="7" name="count" pos="27,-22" text="{excess}" font_size="23" visible="{hasExcess}" foregroundlayer="true" width="35" height="35" justify="center" pivot="center" effect="Outline" color="0,160,0,240" crispness="Always" effect_distance="1,1" effect_color="0,0,0,255" />
 			</rect>
 		</pinned_recipe_ingredient_row>
 
