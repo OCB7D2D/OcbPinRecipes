@@ -1,6 +1,6 @@
-Key,File,Type,English,German
-
-lblContextActionPinRecipe,ui,ui,Pin
-xuiUnpinRecipe,ui,ui,Unpin,Entfernen
-xuiIncrement,ui,ui,Increment,Mehr
-xuiDecrement,ui,ui,Decrement,Weniger
+Key,File,Type,Japanese
+,,,
+lblContextActionPinRecipe,ui,ui,ピン留め
+xuiUnpinRecipe,ui,ui,ピン留め解除
+xuiIncrement,ui,ui,作成数を増やす
+xuiDecrement,ui,ui,作成数を減らす
