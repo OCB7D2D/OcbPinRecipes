@@ -23,6 +23,10 @@ here on GitHub if you find any issues with it.
 
 ## Changelog
 
+### Version 0.4.2
+
+- Added Japanese translations (thx @RikeiR)
+
 ### Version 0.4.1
 
 - Small UI adjustments for better readability
