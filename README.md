@@ -21,7 +21,20 @@ all the necessary checks. So there is a chance that I
 missed a few edge cases in that regard. Please report
 here on GitHub if you find any issues with it.
 
+[![GitHub CI Compile Status][4]][3]
+
+## Download and Install
+
+Simply [download here from GitHub][2] and put into your A20 Mods folder:
+
+- https://github.com/OCB7D2D/OcbPinRecipes/archive/master.zip (master branch)
+
 ## Changelog
+
+### Version 0.4.3
+
+- Added Simplified Chinese translations (thx @future93)
+- Automated deployment and release packaging
 
 ### Version 0.4.2
 
@@ -92,3 +105,6 @@ here on GitHub if you find any issues with it.
 I've developed and tested this Mod against version a20.b218.
 
 [1]: https://github.com/OCB7D2D/OcbPinRecipesUiTdrHart
+[2]: https://github.com/OCB7D2D/OcbPinRecipes/releases
+[3]: https://github.com/OCB7D2D/OcbPinRecipes/actions/workflows/ci.yml
+[4]: https://github.com/OCB7D2D/OcbPinRecipes/actions/workflows/ci.yml/badge.svg

@@ -1,4 +1,4 @@
-Key,File,Type,English,German,Japanese
+Key,File,Type,English,German,Japanese,schinese
 lblContextActionPinRecipe,ui,ui,Pin,Pin,ピン留め,固定
 xuiUnpinRecipe,ui,ui,Unpin,Entfernen,ピン留め解除,取下
 xuiIncrement,ui,ui,Increment,Mehr,作成数を増やす,增量
