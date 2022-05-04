@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("OcbPinRecipes")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("7 Days 2 Die Mod")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("OCBNET")]
 [assembly: AssemblyProduct("OcbPinRecipes")]

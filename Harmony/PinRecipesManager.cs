@@ -1,19 +1,25 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Collections.Generic;
 
 public class PinRecipesManager
 {
 
-    private static PinRecipesManager instance;
+    public XUi XUI { get; private set; }
 
-    public bool IsDirty = true;
+    public EntityPlayerLocal Player { get; private set; }
 
-    public List<PinnedRecipeDTO> Recipes = new List<PinnedRecipeDTO>();
+    private static PinRecipesManager instance = null;
 
-    public List<XUiController> widgets = new List<XUiController>();
+    public List<PinnedRecipeSDO> Recipes = new List<PinnedRecipeSDO>();
+
+    public List<XUiC_PinnedRecipe> Slots = new List<XUiC_PinnedRecipe>();
+
+    public List<XUiC_PinRecipes> Windows = new List<XUiC_PinRecipes>();
 
     public static byte FileVersion = 1;
+
+    public XUiC_CraftingWindowGroup CraftArea = null;
+
+    public int MenusOpen = 0;
 
     public byte CurrentFileVersion { get; set; }
 
@@ -33,176 +39,167 @@ public class PinRecipesManager
         instance = this;
     }
 
+    public void AttachPlayerAndInventory(XUi xui)
+    {
+        XUI = xui; Player = xui?.playerUI?.entityPlayer;
+        if (xui?.PlayerInventory != null) xui.PlayerInventory.OnBackpackItemsChanged += OnInventoryChanged;
+        if (xui?.PlayerInventory != null) xui.PlayerInventory.OnToolbeltItemsChanged += OnInventoryChanged;
+        if (QuestEventManager.Current != null) QuestEventManager.Current.SkillPointSpent += OnSkillPointSpent;
+        OnInventoryChanged(); OnSkillsChanged(); // Update the stats when attached
+    }
+
+    public void DetachPlayerAndInventory()
+    {
+        if (XUI?.PlayerInventory != null) XUI.PlayerInventory.OnBackpackItemsChanged -= OnInventoryChanged;
+        if (XUI?.PlayerInventory != null) XUI.PlayerInventory.OnToolbeltItemsChanged -= OnInventoryChanged;
+        if (QuestEventManager.Current != null) QuestEventManager.Current.SkillPointSpent -= OnSkillPointSpent;
+        XUI = null; Player = null;
+    }
+
+    private void OnInventoryChanged()
+    {
+        foreach (var recipe in Recipes)
+            recipe.OnInventoryChanged();
+        SetWidgetsDirty();
+    }
+
+    public void SetCraftArea(XUiC_CraftingWindowGroup area)
+    {
+        if (CraftArea == area) return;
+        foreach (var recipe in Recipes)
+            recipe.UpdateCraftArea(area);
+        CraftArea = area;
+        SetWidgetsDirty();
+    }
+
+    private void OnSkillPointSpent(string skillName)
+    {
+        OnSkillsChanged();
+    }
+
+    public void OnSkillsChanged()
+    {
+        foreach (var recipe in Recipes)
+            recipe.OnUserStatsChanged();
+        SetWidgetsDirty();
+    }
+
     public static XUiC_CraftingWindowGroup GetOpenCraftingWindow(XUi xui)
     {
         if (instance == null) return null;
-        foreach (var window in xui.GetChildrenByType<XUiC_CraftingWindowGroup>())
-        {
-            if (window == null) continue;
-            if (window.WindowGroup == null) continue;
-            if (window.WindowGroup.isShowing) return window;
-        }
-        return null;
-    }
-
-    static readonly FieldInfo FieldToolWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "toolWindow");
-    static readonly FieldInfo FieldInputWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "inputWindow");
-    static readonly FieldInfo FieldOutputWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "outputWindow");
-    static readonly FieldInfo FieldFuelWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "fuelWindow");
-
-    public static bool CraftingRequirementsValid(XUiC_WorkstationWindowGroup win, Recipe recipe, bool includeFuel = false)
-    {
-        if (FieldToolWindow.GetValue(win) is XUiC_WorkstationToolGrid tools)
-            if (tools != null && !tools.HasRequirement(recipe)) return false;
-        if (FieldInputWindow.GetValue(win) is XUiC_WorkstationInputGrid input)
-            if (input != null && !input.HasRequirement(recipe)) return false;
-        if (FieldOutputWindow.GetValue(win) is XUiC_WorkstationOutputGrid output)
-            if (output != null && !output.HasRequirement(recipe)) return false;
-        if (includeFuel && FieldFuelWindow.GetValue(win) is XUiC_WorkstationFuelGrid fuel)
-            if (fuel != null && !fuel.HasRequirement(recipe)) return false;
-        return true;
-    }
-
-    public static bool CraftingRequirementsValid(XUiC_CraftingWindowGroup win, Recipe recipe, bool includeFuel = false)
-    {
-        if (win is XUiC_WorkstationWindowGroup workstation)
-        {
-            return CraftingRequirementsValid(workstation, recipe, includeFuel);
-        }
-        return true;
+        return instance.CraftArea;
     }
 
     public void SetWidgetsDirty()
     {
-        foreach (var widget in widgets)
-            widget.IsDirty = true;
-        IsDirty = true;
+        // Update main and all children
+        foreach (var ui in Windows)
+            ui.SetAllChildrenDirty();
     }
 
-    public void RegisterWidget(XUiController widget)
+    // We only really support one window currently
+    public void RegisterWindow(XUiC_PinRecipes widget)
     {
-        widgets.Add(widget);
-        SetWidgetsDirty();
+        Windows.Add(widget);
     }
 
-    public void UnregisterWidget(XUiController widget)
+    // Do not pass any updates when unregistered
+    public void UnregisterWindow(XUiC_PinRecipes widget)
     {
-        widgets.Remove(widget);
-        SetWidgetsDirty();
+        Windows.Remove(widget);
     }
 
-    public void PinRecipe(Recipe recipe, int count = 1)
+    // Make sure to update when slot changes
+    private void HandleSlotUpdate(int slot)
     {
-        Recipes.Add(new PinnedRecipeDTO(recipe, count));
-        SetWidgetsDirty();
+        if (slot >= Slots.Count) return;
+        if (slot >= Recipes.Count) Slots[slot].SetRecipe(null);
+        else Slots[slot].SetRecipe(Recipes[slot]);
     }
 
-    public void UnpinRecipe(int slot)
+    // Register widget controller for one pinned recipe
+    public void RegisterSlot(XUiC_PinnedRecipe widget)
     {
-        if (Recipes.Count <= slot) return;
+        Slots.Add(widget);
+        HandleSlotUpdate(Slots.Count - 1);
+    }
+
+    // Unregister widget controller for one pinned recipe
+    public void UnregisterSlot(XUiC_PinnedRecipe widget)
+    {
+        Slots.Remove(widget);
+        // Not properly implemented
+        // We don't really need it!
+    }
+
+
+    // Add a recipe and amount to the queued pins
+    // Note: only a few may be shown on the screen
+    public void PinRecipe(Recipe recipe, int amount)
+    {
+        Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea));
+        HandleSlotUpdate(Recipes.Count - 1);
+    }
+
+    // Remove a pin from the queue (for whatever reason)
+    // Make sure to show any more queued recipes instead
+    public bool UnpinRecipe(PinnedRecipeSDO rdo)
+    {
+        int slot = Recipes.IndexOf(rdo);
+        if (slot == -1) return false;
         Recipes.RemoveAt(slot);
-        SetWidgetsDirty();
+        for (int i = slot; i < Slots.Count; i++)
+            HandleSlotUpdate(i);
+        return true;
     }
-
-    public void IncrementCount(int slot)
-    {
-        if (Recipes.Count <= slot) return;
-        Recipes[slot].Count += 1;
-        SetWidgetsDirty();
-    }
-    public void DecrementCount(int slot)
-    {
-        if (Recipes.Count <= slot) return;
-        if (Recipes[slot].Count < 2) return;
-        Recipes[slot].Count -= 1;
-        SetWidgetsDirty();
-    }
-
-    public Recipe GetRecipe(int slot)
-    {
-        return Recipes.Count <= slot ?
-            null : Recipes[slot].Recipe;
-    }
-
-    public int GetRecipeCount(int slot)
-    {
-        return Recipes.Count <= slot ?
-            -1 : Recipes[slot].Count;
-    }
-
-    public int GetAvailableIngredient(int slot, int idx, XUi xui)
-    {
-        ItemStack ingredient = GetRecipeIngredient(slot, idx);
-        if (ingredient == null) return -1;
-        return xui.PlayerInventory.GetItemCount(
-            ingredient.itemValue);
-    }
-
-    public int GetNeededIngredient(int slot, int idx, XUi xui)
-    {
-        Recipe recipe = GetRecipe(slot);
-        if (recipe == null) return -1;
-        ItemStack ingredient = GetRecipeIngredient(slot, idx);
-        if (ingredient == null) return 999999;
-        // I hope I copied the following code correctly
-        // Should take tier into account for what's needed
-        // Then reach out to player inventory for what we have
-        float tier = EffectManager.GetValue(
-            PassiveEffects.CraftingTier,
-            _originalValue: 1f,
-            _entity: xui.playerUI.entityPlayer,
-            _recipe: recipe,
-            tags: recipe.tags);
-        int needed = (int)EffectManager.GetValue(
-            PassiveEffects.CraftingIngredientCount,
-            _originalValue: ingredient.count,
-            _entity: xui.playerUI.entityPlayer,
-            _recipe: recipe,
-            tags: FastTags.Parse(ingredient.itemValue.ItemClass.GetItemName()),
-            craftingTier: (int)tier);
-        return needed * GetRecipeCount(slot);
-    }
-
-    public ItemStack GetRecipeIngredient(int slot, int index)
-    {
-        Recipe recipe = GetRecipe(slot);
-        if (recipe == null) return null;
-        if (recipe.ingredients == null) return null;
-        if (recipe.ingredients.Count <= index) return null;
-        return recipe.ingredients[index];
-    }
-
-    public void WritePlayerData(PooledBinaryWriter bw)
-    {
-        bw.Write(FileVersion);
-        bw.Write(Recipes.Count);
-        foreach (PinnedRecipeDTO recipe in Recipes)
-        {
-            bw.Write(recipe.Count);
-            bw.Write(recipe.Recipe.GetName());
-        }
-    }
-
-    public void ReadPlayerData(PooledBinaryReader br)
+ 
+    // There is a weird edge case, as you can run the game twice from
+    // the same steam account. When you connect one to the other, you
+    // will end up with the same "EOS ID", thus only one user profile.
+    // Without our "fix", the recipes would then get somewhat synced.
+    // I believe under the hood this may also trigger other edge cases.
+    // Btw. we store into `Saves/{World}/{SaveGame}/Player/EOS_XYZ.ttp`
+    public void ReadPlayerData(PooledBinaryReader br, int entityId)
     {
         // Check if we have additional data to be read
         // This way we should be able to upgrade the stream if needed
         if (br.BaseStream.Position >= br.BaseStream.Length)
         {
-            Log.Warning("Vanilla game detected, user data will be upgraded");
+            Log.Warning("OcbPinRecipes: Vanilla game detected, user data will be upgraded");
             return;
         }
-        Recipes.Clear();
+
+        // Check if we are reading for the same entityID
+        // Otherwise we do not update our pinned recipes
+        // But we must still fully consume the packet
+        bool isSameUser = (Player == null || Player.entityId == entityId);
+
         CurrentFileVersion = br.ReadByte();
         int count = br.ReadInt32();
+
+        if (isSameUser == true) Recipes.Clear();
         for (int index = 0; index < count; ++index)
         {
-            int multiply = br.ReadInt32();
+            int amount = br.ReadInt32();
             string name = br.ReadString();
+            if (isSameUser == false) continue;
             if (CraftingManager.GetRecipe(name) is Recipe recipe)
-            {
-                Recipes.Add(new PinnedRecipeDTO(recipe, multiply));
-            }
+                Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea));
+        }
+        // Make sure to update all slots
+        for (int i = 0; i < Slots.Count; i++)
+            HandleSlotUpdate(i);
+    }
+
+    // Append pinned recipes to user data
+    public void WritePlayerData(PooledBinaryWriter bw)
+    {
+        bw.Write(FileVersion);
+        bw.Write(Recipes.Count);
+        foreach (PinnedRecipeSDO recipe in Recipes)
+        {
+            bw.Write(recipe.Count);
+            bw.Write(recipe.Recipe.GetName());
         }
     }
 

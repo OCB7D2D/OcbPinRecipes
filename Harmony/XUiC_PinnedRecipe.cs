@@ -5,173 +5,65 @@ using System.Reflection;
 public class XUiC_PinnedRecipe : XUiController
 {
 
-    private int Slot = 0;
+    private PinnedRecipeSDO RDO;
+    public Recipe Recipe => RDO?.Recipe;
+    public int Amount => RDO == null ? -1 : RDO.Count;
 
-    public static string ID = "";
+    public string Title => RDO?.Title;
+    public string IconImg => RDO?.IconImg;
+    public string IconTint => RDO?.IconTint;
 
-    private readonly List<XUiC_PinnedRecipeIngredient> uiIngredients
-        = new List<XUiC_PinnedRecipeIngredient>();
-    private static readonly CachedStringFormatterXuiRgbaColor colorFormatter
-        = new CachedStringFormatterXuiRgbaColor();
-    private static readonly PinRecipesManager PinManager = PinRecipesManager.Instance;
+    public bool IsLocked => RDO != null && RDO.IsLocked;
+    public bool IsCraftable => RDO != null && RDO.IsCraftable;
+    public bool IsCorrectArea => RDO != null && RDO.CorrectArea;
 
-    private Recipe recipe;
-    private int amount;
+    private XUiC_PinnedRecipeIngredient[] uiIngredients;
 
-    private void OnIncrement(XUiController _sender, int _mouseButton)
+    public void SetRecipe(PinnedRecipeSDO dto)
     {
-        PinRecipesManager.Instance.IncrementCount(Slot);
-    }
-
-    private void OnDecrement(XUiController _sender, int _mouseButton)
-    {
-        PinRecipesManager.Instance.DecrementCount(Slot);
-    }
-
-    private void OnUnpin(XUiController _sender, int _mouseButton)
-    {
-        PinRecipesManager.Instance.UnpinRecipe(Slot);
-    }
-
-    static readonly FieldInfo FieldFuelWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "fuelWindow");
-
-    private void OnCraft(XUiController _sender, int _mouseButton)
-    {
-        // Try to get the crafting window (only have one!?)
-        XUiC_CraftingWindowGroup craftWin = 
-            PinRecipesManager.GetOpenCraftingWindow(xui);
-        if (craftWin == null) return;
-
-        // Check if the recipe is actually unlocked
-        if (!XUiM_Recipes.GetRecipeIsUnlocked(xui, recipe)) return;
-        // EntityPlayerLocal entityPlayer = xui.playerUI.entityPlayer;
-        if (!PinRecipesManager.CraftingRequirementsValid(craftWin, recipe)) return;
-        // ItemClass klass = ItemClass.GetForId(recipe.itemValueType);
-
-        // Get the crafting tier to apply effects
-        int tier = (int)EffectManager.GetValue(
-            PassiveEffects.CraftingTier,
-            _originalValue: 1f,
-            _entity: xui.playerUI.entityPlayer,
-            _recipe: recipe,
-            tags: recipe.tags);
-
-        // Create adjusted recipe
-        Recipe _recipe = new Recipe()
-        {
-            itemValueType = recipe.itemValueType,
-            // Apply craft output count effect (what to actually produce)
-            count = XUiM_Recipes.GetRecipeCraftOutputCount(xui, recipe),
-            craftingArea = recipe.craftingArea,
-            craftExpGain = recipe.craftExpGain,
-            craftingTime = XUiM_Recipes.GetRecipeCraftTime(xui, recipe),
-            craftingToolType = recipe.craftingToolType,
-            tags = recipe.tags
-        };
-
-        List<ItemStack> allItemStacks = xui.PlayerInventory.GetAllItemStacks();
-        // Process all ingredients and adjust counts
-        foreach (var ingredient in recipe.ingredients)
-        {
-            int count = ingredient.count;
-            if (recipe.UseIngredientModifier)
-                count = (int)EffectManager.GetValue(
-                    PassiveEffects.CraftingIngredientCount,
-                    _originalValue: ingredient.count,
-                    _entity: xui.playerUI.entityPlayer,
-                    _recipe: recipe,
-                    tags: FastTags.Parse(ingredient.itemValue.ItemClass.GetItemName()),
-                    craftingTier: tier);
-            // Count was adjusted by effect?
-            if (count != ingredient.count)
-                _recipe.scrapable = true;
-            if (ingredient.itemValue.HasQuality)
-            {
-                // This branch is called for e.g. car batteries
-                // Otherwise we don't give correct items back on cancel
-                List<ItemValue> available = new List<ItemValue>();
-                foreach (var itemStack in allItemStacks)
-                {
-                    if (itemStack.itemValue.type == ingredient.itemValue.type)
-                        available.Add(itemStack.itemValue.Clone());
-                }
-                available.Sort((a, b) => a.Quality - b.Quality);
-                int len = count == 0 ? 1 : count;
-                foreach (var item in available)
-                {
-                    if (item.type != ingredient.itemValue.type) continue;
-                    _recipe.AddIngredient(item, 1);
-                    if (--len == 0) break;
-                }
-                if (len != 0) return;
-            }
-            else
-            {
-                _recipe.AddIngredient(ingredient.itemValue, count);
-            }
-        }
-
-        if (!xui.PlayerInventory.HasItems(_recipe.ingredients, amount)) return;
-        // XUiC_WorkstationInputGrid childByType = this.craftCountControl.WindowGroup.Controller.GetChildByType<XUiC_WorkstationInputGrid>();
-        // if (childByType != null) flag2 |= childByType.HasItems(recipe.ingredients, count2);
-        if (craftWin.AddItemToQueue(_recipe, amount))
-        {
-            if (craftWin is XUiC_WorkstationWindowGroup workstation)
-            {
-                if (FieldFuelWindow.GetValue(workstation) is XUiC_WorkstationFuelGrid grid)
-                {
-                    if (PinRecipesManager.CraftingRequirementsValid(workstation, recipe, true))
-                    {
-                        grid.TurnOn();
-                    }
-                }
-            }
-            // Should trigger to turn it on
-            // craftWin.AddItemToQueue(null);
-            // if (childByType != null) childByType.
-            //   RemoveItems(_recipe.ingredients, multiplier);
-            // else
-            xui.PlayerInventory.RemoveItems(_recipe.ingredients, amount);
-            PinRecipesManager.Instance.UnpinRecipe(Slot);
-        }
-        // else WarnQueueFull();
-        craftWin.WindowGroup.Controller.SetAllChildrenDirty();
-        SetAllChildrenDirty();
+        RDO = dto;
+        for (int i = 0; i < uiIngredients.Length; i++)
+            uiIngredients[i].SetIngredient(RDO?.GetIngredient(i));
+        IsDirty = true;
     }
 
     public override void OnOpen()
     {
         base.OnOpen();
-        PinRecipesManager.Instance.RegisterWidget(this);
+        PinRecipesManager.Instance
+            .RegisterSlot(this);
     }
 
     public override void OnClose()
     {
         base.OnClose();
-        PinRecipesManager.Instance.UnregisterWidget(this);
+        PinRecipesManager.Instance
+            .UnregisterSlot(this);
     }
-
 
     public override void Init()
     {
         base.Init();
-        ID = WindowGroup.ID;
         // Collect all UI placeholders for pinned recipes
-        foreach (var ui in GetChildrenByType<XUiC_PinnedRecipeIngredient>())
-        {
-            if (ui == null) continue;
-            uiIngredients.Add(ui);
-            ui.Slot = Slot;
-        }
-        if (GetChildById("Unpin") is XUiController unpin)
-            unpin.OnPress += new XUiEvent_OnPressEventHandler(OnUnpin);
-        if (GetChildById("Decrement") is XUiController decrement)
-            decrement.OnPress += new XUiEvent_OnPressEventHandler(OnDecrement);
-        if (GetChildById("Increment") is XUiController increment)
-            increment.OnPress += new XUiEvent_OnPressEventHandler(OnIncrement);
-        if (GetChildById("Craft") is XUiController craft)
-            craft.OnPress += new XUiEvent_OnPressEventHandler(OnCraft);
+        uiIngredients = GetChildrenByType<XUiC_PinnedRecipeIngredient>();
+        // Connect our event handlers if elements are found
+        if (GetChildById("Unpin") is XUiController unpin) unpin.OnPress += OnUnpin;
+        if (GetChildById("Decrement") is XUiController decrement) decrement.OnPress += OnDecrement;
+        if (GetChildById("Increment") is XUiController increment) increment.OnPress += OnIncrement;
+        if (GetChildById("Craft") is XUiController craft) craft.OnPress += OnCraft;
+        OnScroll += HandleScroll;
         IsDirty = true;
+    }
+
+    public override void Cleanup()
+    {
+        base.Cleanup();
+        uiIngredients = null;
+        if (GetChildById("Unpin") is XUiController unpin) unpin.OnPress -= OnUnpin;
+        if (GetChildById("Decrement") is XUiController decrement) decrement.OnPress -= OnDecrement;
+        if (GetChildById("Increment") is XUiController increment) increment.OnPress -= OnIncrement;
+        if (GetChildById("Craft") is XUiController craft) craft.OnPress -= OnCraft;
+        OnScroll -= HandleScroll;
     }
 
     public override void Update(float _dt)
@@ -179,101 +71,9 @@ public class XUiC_PinnedRecipe : XUiController
         base.Update(_dt);
         if (IsDirty == false) return;
         if (!XUi.IsGameRunning()) return;
-        recipe = PinManager.GetRecipe(Slot);
-        amount = PinManager.GetRecipeCount(Slot);
-        ViewComponent.IsVisible =
-            (recipe != null);
+        ViewComponent.IsVisible = (Recipe != null);
         RefreshBindings();
         IsDirty = false;
-    }
-
-    private string GetIcon()
-    {
-        if (recipe == null) return string.Empty;
-        ItemValue itemValue = new ItemValue(recipe.itemValueType);
-        return itemValue.GetPropertyOverride("CustomIcon",
-            itemValue.ItemClass.GetIconName());
-    }
-
-    private string GetTitle()
-    {
-        if (recipe == null) return string.Empty;
-        return Localization.Get(recipe.GetName());
-    }
-
-    private string GetIconTint()
-    {
-        if (recipe == null) return string.Empty;
-        ItemValue itemValue = new ItemValue(recipe.itemValueType);
-        return colorFormatter.Format(itemValue.ItemClass.GetIconTint(itemValue));
-    }
-
-    private bool IsVisible()
-    {
-        return recipe != null;
-    }
-
-    private bool HasEnoughCraftingMaterials(Recipe recipe)
-    {
-        if (recipe == null) return false;
-        for (int idx = 0; idx < recipe.ingredients.Count; idx += 1)
-        {
-            int needed = PinRecipesManager.Instance.GetNeededIngredient(Slot, idx, xui);
-            int available = PinRecipesManager.Instance.GetAvailableIngredient(Slot, idx, xui);
-            if (available < needed) return false;
-        }
-        return true;
-    }
-
-    private bool IsCorrectCraftingArea(XUiC_CraftingWindowGroup win, Recipe recipe)
-    {
-        if (win == null || win.Workstation == null) return false;
-        // Copied from XUiC_ItemActionList::SetCraftingActionList
-        Block block = Block.GetBlockByName(win.Workstation);
-        if (block != null && block.Properties.Values
-            .ContainsKey("Workstation.CraftingAreaRecipes"))
-        {
-            string str = block.Properties.Values[
-                "Workstation.CraftingAreaRecipes"];
-            string[] areas = new string[1] { str };
-            if (str.Contains(","))
-            {
-                areas = str
-                    .Replace(", ", ",")
-                    .Replace(" ,", ",")
-                    .Replace(" , ", ",")
-                    .Split(',');
-            }
-            foreach (var area in areas)
-            {
-                if (area.EqualsCaseInsensitive(recipe.craftingArea))
-                {
-                    return true;
-                }
-                else if (area.EqualsCaseInsensitive("player"))
-                {
-                    if (recipe.craftingArea == null) return true;
-                    if (recipe.craftingArea == string.Empty) return true;
-                }
-            }
-        }
-        else
-        {
-            return win.Workstation.EqualsCaseInsensitive(recipe.craftingArea);
-        }
-        return false;
-    }
-
-    private bool CanCraft()
-    {
-        if (recipe == null) return false;
-        var craftWin = PinRecipesManager.GetOpenCraftingWindow(xui);
-        if (craftWin == null) return false;
-        if (!XUiM_Recipes.GetRecipeIsUnlocked(xui, recipe)) return false;
-        if (!PinRecipesManager.CraftingRequirementsValid(craftWin, recipe)) return false;
-        if (!IsCorrectCraftingArea(craftWin, recipe)) return false;
-        if (!HasEnoughCraftingMaterials(recipe)) return false;
-        return true;
     }
 
     public override bool GetBindingValue(ref string value, string bindingName)
@@ -281,42 +81,155 @@ public class XUiC_PinnedRecipe : XUiController
         switch (bindingName)
         {
             case "title":
-                value = GetTitle();
+                value = Title;
                 return true;
             case "icon":
-                value = GetIcon();
+                value = IconImg;
                 return true;
             case "iconTint":
-                value = GetIconTint();
+                value = IconTint;
                 return true;
             case "amount":
-                value = amount.ToString();
+                value = Amount.ToString();
                 return true;
             case "isVisible":
-                value = IsVisible().ToString();
+                value = (Recipe != null).ToString();
                 return true;
             case "canCraft":
-                value = CanCraft().ToString();
+                value = (IsCraftable && IsCorrectArea).ToString();
+                return true;
+            case "isCorrectArea":
+                value = (IsCorrectArea).ToString();
+                return true;
+            case "isRecipeLocked":
+                value = (IsLocked).ToString();
                 return true;
             case "showDecrement":
-                value = (amount > 1 && PinRecipesManager.
-                    GetOpenCraftingWindow(xui) != null).ToString();
+                value = (Amount > 1 && PinRecipesManager.
+                    Instance.MenusOpen > 0).ToString();
+                return true;
+            case "showIncrement":
+                value = (Amount != -1 && PinRecipesManager.
+                    Instance.MenusOpen > 0).ToString();
                 return true;
         }
         value = "";
         return false;
     }
 
-    public override bool ParseAttribute(string name, string value, XUiController _parent)
+    private void OnUnpin(XUiController sender, int mouseButton)
     {
-        switch (name)
+        PinRecipesManager.Instance.UnpinRecipe(RDO);
+    }
+
+    private void OnIncrement(XUiController sender, int mouseButton)
+    {
+        if (RDO == null) return;
+        RDO.SetCount(RDO.Count + 1);
+        SetAllChildrenDirty();
+    }
+
+    private void OnDecrement(XUiController sender, int mouseButton)
+    {
+        if (RDO == null) return;
+        if (RDO.Count < 2) return;
+        RDO.SetCount(RDO.Count - 1);
+        SetAllChildrenDirty();
+    }
+
+    private void HandleScroll(XUiController sender, float delta)
+    {
+        if (RDO == null) return;
+        RDO.SetCount(RDO.Count +
+            (int)(delta * 10f));
+        SetAllChildrenDirty();
+    }
+
+    static readonly FieldInfo FieldFuelWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "fuelWindow");
+
+    // Most complex functionality I had to copy in order to support
+    // Let's hope I got all the math correct to not allow any cheating ;)
+    // Note: maybe we should enforce an update of the cached values?
+    private void OnCraft(XUiController _sender, int _mouseButton)
+    {
+        if (!PinRecipesManager.HasInstance) return;
+
+        // Get the crafting area if one is open
+        XUiC_CraftingWindowGroup craftArea =
+            PinRecipesManager.Instance.CraftArea;
+        // Return if we can't craft anywhere
+        if (craftArea == null) return;
+
+        // Check if the recipe is actually unlocked
+        if (!XUiM_Recipes.GetRecipeIsUnlocked(xui, Recipe)) return;
+        if (!RDO.CraftingRequirementsValid(craftArea)) return;
+        // ItemClass klass = ItemClass.GetForId(recipe.itemValueType);
+
+        // Create adjusted recipe
+        Recipe _recipe = new Recipe()
         {
-            case "slot":
-                Slot = int.Parse(value);
-                return true;
-            default:
-                return base.ParseAttribute(
-                    name, value, _parent);
+            itemValueType = Recipe.itemValueType,
+            // Apply craft output count effect (what to actually produce)
+            count = XUiM_Recipes.GetRecipeCraftOutputCount(xui, Recipe),
+            craftingArea = Recipe.craftingArea,
+            craftExpGain = Recipe.craftExpGain,
+            craftingTime = XUiM_Recipes.GetRecipeCraftTime(xui, Recipe),
+            craftingToolType = Recipe.craftingToolType,
+            tags = Recipe.tags
+        };
+
+        EntityPlayerLocal player = xui.playerUI.entityPlayer;
+        List<ItemStack> allItemStacks = xui.PlayerInventory.GetAllItemStacks();
+        // Process all ingredients and adjust counts
+        foreach (var ingredient in RDO.Ingredients)
+        {
+            ingredient.RecalcNeeded(player);
+            var itemValue = ingredient.Ingredient.itemValue;
+            if (itemValue.HasQuality)
+            {
+                // This branch is called for e.g. car batteries
+                // Otherwise we don't give correct items back on cancel
+                List<ItemValue> available = new List<ItemValue>();
+                foreach (var itemStack in allItemStacks)
+                {
+                    if (itemStack.itemValue.type == itemValue.type)
+                        available.Add(itemStack.itemValue.Clone());
+                }
+                available.Sort((a, b) => a.Quality - b.Quality);
+                int len = ingredient.Need == 0 ? 1 : ingredient.Need;
+                foreach (var item in available)
+                {
+                    if (item.type != itemValue.type) continue;
+                    _recipe.AddIngredient(item, 1);
+                    if (--len == 0) break;
+                }
+                if (len != 0) return;
+            }
+            else
+            {
+                _recipe.AddIngredient(
+                    itemValue, ingredient.Need);
+            }
+        }
+        // Check if we have the required materials in the inventory
+        if (!xui.PlayerInventory.HasItems(_recipe.ingredients, Amount)) return;
+        // Enqueue items to crafted after requirements are checked
+        if (craftArea.AddItemToQueue(_recipe, Amount))
+        {
+            if (craftArea is XUiC_WorkstationWindowGroup workstation)
+            {
+                if (FieldFuelWindow.GetValue(workstation) is XUiC_WorkstationFuelGrid grid)
+                {
+                    if (RDO.CraftingRequirementsValid(workstation, true))
+                    {
+                        grid.TurnOn();
+                    }
+                }
+            }
+            // Consume the items once we scheduled the crafting
+            xui.PlayerInventory.RemoveItems(_recipe.ingredients, Amount);
+            // Unpin the recipe, it fulfilled its purpose
+            PinRecipesManager.Instance.UnpinRecipe(RDO);
         }
     }
 

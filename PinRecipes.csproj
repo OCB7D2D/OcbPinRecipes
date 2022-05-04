@@ -76,7 +76,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Harmony\PinnedRecipeDTO.cs" />
+    <Compile Include="Harmony\PinnedIngredientSDO.cs" />
+    <Compile Include="Harmony\PinnedRecipeSDO.cs" />
     <Compile Include="Harmony\PinRecipes.cs" />
     <Compile Include="Harmony\AssemblyInfo.cs" />
     <Compile Include="Harmony\PinRecipesManager.cs" />
@@ -90,6 +91,10 @@
     <Content Include="Config\XUi\controls.xml" />
     <Content Include="Config\XUi\windows.xml" />
     <Content Include="Config\XUi\xui.xml" />
+    <Content Include="ModInfo.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

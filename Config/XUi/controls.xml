@@ -4,16 +4,22 @@
 	<append xpath="/controls">
 		<pinned_recipe_row slot="9999">
 			<rect depth="1" width="176" height="67" slot="${slot}"
-				  controller="XUiC_PinnedRecipe, PinRecipes">
+				  controller="XUiC_PinnedRecipe, PinRecipes" on_scroll="true">
 				<sprite pos="0,0" width="176" height="67" color="[black]" globalopacitymod="0.9" type="sliced" />
 				<sprite pos="1,-1" width="174" height="65" color="[lightGrey]" globalopacitymod="0.8" type="sliced" />
 				<rect depth="4" pos="3,-2" width="170" height="30">
 
 					<!-- Main Icon of Pinned recipe -->
-					<sprite depth="2" atlas="ItemIconAtlas"
+					<sprite depth="1" atlas="ItemIconAtlas"
 					       pos="0,0" width="30" height="30"
 					       foregroundlayer="true" globalopacitymod="0.9"
 					       sprite="{icon}" color="{iconTint}" />
+
+					<!-- Icon indicating recipe is locked -->
+					<sprite depth="2" pos="6,-6" width="20" height="20"
+					        sprite="ui_game_symbol_locked" color="248,128,16,220"
+					        foregroundlayer="true" globalopacitymod="0.9"
+					        visible="{isRecipeLocked}" />
 
 					<!-- Label counting how many items of recipe to be crafted -->
 					<label depth="3" name="count" text="{amount}" visible="true"
@@ -39,7 +45,7 @@
 					        justify="center" pivot="center"
 					        sound="[paging_click]"
 					        foregroundlayer="true"
-					        visible="{hasCraftArea}"
+					        visible="{showIncrement}"
 					        tooltip_key="xuiIncrement" />
 
 					<!-- Button to decrement amount of items to be made -->
@@ -61,7 +67,7 @@
 					        justify="center" pivot="center"
 					        sound="[paging_click]"
 					        foregroundlayer="true"
-					        visible="{hasCraftArea}"
+					        visible="{isMenuOpen}"
 					        tooltip_key="xuiUnpinRecipe" />
 
 					<!-- Button to craft the recipe -->
@@ -80,11 +86,11 @@
 				<rect depth="6" pos="3,-35" width="170" height="30">
 					<grid rows="5" width="170" height="30"
 					      cell_height="30" cell_width="35" arrangement="horizontal">
-						<pinned_recipe_ingredient_row name="0" index="0"/>
-						<pinned_recipe_ingredient_row name="1" index="1"/>
-						<pinned_recipe_ingredient_row name="2" index="2"/>
-						<pinned_recipe_ingredient_row name="3" index="3"/>
-						<pinned_recipe_ingredient_row name="4" index="4"/>
+						<pinned_recipe_ingredient_row/>
+						<pinned_recipe_ingredient_row/>
+						<pinned_recipe_ingredient_row/>
+						<pinned_recipe_ingredient_row/>
+						<pinned_recipe_ingredient_row/>
 					</grid>
 				</rect>
 

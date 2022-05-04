@@ -1,60 +1,27 @@
-using System.Collections.Generic;
-
 public class XUiC_PinRecipes : XUiController
 {
 
     public static string ID = "";
 
-    private readonly List<XUiC_PinnedRecipe> uiRecpies
-        = new List<XUiC_PinnedRecipe>();
-
     public override void Init()
     {
         base.Init();
         ID = WindowGroup.ID;
-        // Collect all UI placeholders for pinned recipes
-        foreach (var ui in GetChildrenByType<XUiC_PinnedRecipe>())
-        {
-            if (ui == null) continue;
-            uiRecpies.Add(ui);
-        }
+        IsDirty = true;
     }
 
     public override void OnOpen()
     {
         base.OnOpen();
-        xui.PlayerInventory.OnBackpackItemsChanged += new XUiEvent_BackpackItemsChanged(OnInventoryEvent);
-        xui.PlayerInventory.OnToolbeltItemsChanged += new XUiEvent_ToolbeltItemsChanged(OnInventoryEvent);
-        QuestEventManager.Current.SkillPointSpent += new QuestEvent_SkillPointSpent(OnQuestEvent);
-        QuestEventManager.Current.WindowOpened += new QuestEvent_WindowOpened(OnQuestEvent);
-        PinRecipesManager.Instance.RegisterWidget(this);
+        PinRecipesManager.Instance
+            .RegisterWindow(this);
     }
 
     public override void OnClose()
     {
         base.OnClose();
-        xui.PlayerInventory.OnBackpackItemsChanged -= new XUiEvent_BackpackItemsChanged(OnInventoryEvent);
-        xui.PlayerInventory.OnToolbeltItemsChanged -= new XUiEvent_ToolbeltItemsChanged(OnInventoryEvent);
-        QuestEventManager.Current.SkillPointSpent -= new QuestEvent_SkillPointSpent(OnQuestEvent);
-        QuestEventManager.Current.WindowOpened -= new QuestEvent_WindowOpened(OnQuestEvent);
-        PinRecipesManager.Instance.UnregisterWidget(this);
-    }
-
-    private void OnQuestEvent(string window)
-    {
-        if (window == "compass")
-        {
-            if (PinRecipesManager.HasInstance)
-                PinRecipesManager.Instance.SetWidgetsDirty();
-            IsDirty = true;
-        }
-    }
-
-    private void OnInventoryEvent()
-    {
-        if (PinRecipesManager.HasInstance)
-            PinRecipesManager.Instance.SetWidgetsDirty();
-        IsDirty = true;
+        PinRecipesManager.Instance
+            .UnregisterWindow(this);
     }
 
     public override void Update(float _dt)
@@ -72,21 +39,28 @@ public class XUiC_PinRecipes : XUiController
         {
             case "hasPinnedRecipe":
                 if (PinRecipesManager.HasInstance)
-                    (PinRecipesManager.Instance.Recipes.Count > 0).ToString();
+                    value = (PinRecipesManager.Instance
+                        .Recipes.Count > 0).ToString();
                 else
                     value = "false";
                 return true;
             case "pinCount":
                 if (PinRecipesManager.HasInstance)
-                    PinRecipesManager.Instance.Recipes.Count.ToString();
+                    value = PinRecipesManager.Instance
+                        .Recipes.Count.ToString();
                 else
                     value = "0";
                 return true;
-            case "hasCraftArea":
-                value = (PinRecipesManager.GetOpenCraftingWindow(xui) != null).ToString();
+            case "isMenuOpen":
+            case "hasCraftArea": // deprecated
+                if (PinRecipesManager.HasInstance)
+                    value = (PinRecipesManager.Instance
+                        .MenusOpen > 0).ToString();
+                else
+                    value = "false";
                 return true;
         }
-        value = "";
+        value = string.Empty;
         return false;
     }
 

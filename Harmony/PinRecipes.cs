@@ -1,8 +1,5 @@
 ﻿using HarmonyLib;
-using System.Collections.Generic;
 using System.Reflection;
-
-#pragma warning disable IDE0051 // Remove unused private members
 
 public class PinRecipes : IModApi
 {
@@ -14,29 +11,7 @@ public class PinRecipes : IModApi
         harmony.PatchAll(Assembly.GetExecutingAssembly());
     }
 
-    [HarmonyPatch(typeof(EntityPlayerLocal))]
-    [HarmonyPatch("guiDrawCrosshair")]
-    public class EntityPlayerLocal_OnHUD
-    {
-        static void Postfix(GUIWindowManager ___windowManager)
-        {
-            if (GameManager.Instance.IsPaused()) return;
-             ___windowManager.OpenIfNotOpen(XUiC_PinRecipes.ID, false);
-        }
-    }
-
-    [HarmonyPatch(typeof(XUiC_InGameMenuWindow))]
-    [HarmonyPatch("OnOpen")]
-    public class XUiC_InGameMenuWindow_OnOpen
-    {
-        static void Postfix(XUiC_InGameMenuWindow __instance)
-        {
-            if (!GameManager.Instance.IsPaused()) return;
-            __instance.xui.playerUI.windowManager
-                .CloseIfOpen(XUiC_PinRecipes.ID);
-        }
-    }
-
+    // Patch to add pin option into action list
     [HarmonyPatch(typeof(XUiC_ItemActionList))]
     [HarmonyPatch("SetCraftingActionList")]
     public class XUiC_ItemActionList_SetCraftingActionList
@@ -54,76 +29,184 @@ public class PinRecipes : IModApi
         }
     }
 
-    // This patch is somewhat ambivalent, since it seems
-    // to be called too often, but only if the UI is shown.
-    // So still acceptable as regular CPU load is zero.
-    // It does seem to be to "one hook to solve it all"
-    [HarmonyPatch(typeof(GUIWindowManager))]
-    [HarmonyPatch("OnGUI")]
-    public class GUIWindowManager_OnGUI
-    {
-        static void Prefix(List<GUIWindow> ___windowsToOpen)
-        {
-            if (!___windowsToOpen.Exists(win =>
-                { return win.Id == "backpack"; })) return;
-            if (!PinRecipesManager.HasInstance) return;
-            PinRecipesManager.Instance.SetWidgetsDirty();
-        }
-    }
-
-    [HarmonyPatch(typeof(XUiC_ItemStack))]
-    [HarmonyPatch("set_ItemStack")]
-    public class ItemStack_Set_ItemStack
+    // Register event handlers when game starts
+    [HarmonyPatch(typeof(GameStateManager))]
+    [HarmonyPatch("StartGame")]
+    public class GameStateManager_StartGame
     {
         static void Postfix()
         {
             if (!PinRecipesManager.HasInstance) return;
-            PinRecipesManager.Instance.SetWidgetsDirty();
+            XUi xui = LocalPlayerUI.GetUIForPrimaryPlayer()?.xui;
+            PinRecipesManager.Instance.AttachPlayerAndInventory(xui);
         }
     }
 
+    // Unregister event handlers when game ends
+    [HarmonyPatch(typeof(GameStateManager))]
+    [HarmonyPatch("EndGame")]
+    public class GameStateManager_EndGame
+    {
+        static void Postfix()
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.DetachPlayerAndInventory();
+        }
+    }
+
+    // Patch into where regular windows are also opened
+    // Note: It seems to me this is called pretty often!
+    // Note: But all other windows do exactly the same!
+    [HarmonyPatch(typeof(EntityPlayerLocal))]
+    [HarmonyPatch("guiDrawCrosshair")]
+    public class EntityPlayerLocal_OnHUD
+    {
+        static void Postfix(GUIWindowManager ___windowManager)
+        {
+            if (GameManager.Instance.IsPaused()) return;
+            ___windowManager.OpenIfNotOpen(XUiC_PinRecipes.ID, false);
+        }
+    }
+
+    // Hide the pins when the main menu is shown
+    [HarmonyPatch(typeof(XUiC_InGameMenuWindow))]
+    [HarmonyPatch("OnOpen")]
+    public class XUiC_InGameMenuWindow_OnOpen
+    {
+        static void Postfix(XUiC_InGameMenuWindow __instance)
+        {
+            if (!GameManager.Instance.IsPaused()) return;
+            __instance.xui.playerUI.windowManager
+                .CloseIfOpen(XUiC_PinRecipes.ID);
+        }
+    }
+
+    // Update state when cursor is showing
+    [HarmonyPatch(typeof(GUIWindowManager))]
+    [HarmonyPatch("EnableWindowActionSet")]
+    public class XUiWindowGroup_OnOpen
+    {
+        static void Postfix(XUiC_CraftingWindowGroup __instance)
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager manager = PinRecipesManager.Instance;
+            manager.MenusOpen += 1;
+            if (manager.MenusOpen == 1)
+                manager.SetWidgetsDirty();
+        }
+    }
+
+    // Update state when cursor is hidden
+    [HarmonyPatch(typeof(GUIWindowManager))]
+    [HarmonyPatch("DisableWindowActionSet")]
+    public class XUiWindowGroup_onClose
+    {
+        static void Postfix()
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager manager = PinRecipesManager.Instance;
+            manager.MenusOpen -= 1;
+            if (manager.MenusOpen == 0)
+                manager.SetWidgetsDirty();
+        }
+    }
+
+    // Update state when craft-station is opened
+    [HarmonyPatch(typeof(XUiC_CraftingWindowGroup))]
+    [HarmonyPatch("OnOpen")]
+    public class XUiC_CraftingWindowGroup_OnOpen
+    {
+        static void Postfix(XUiC_CraftingWindowGroup __instance)
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.SetCraftArea(__instance);
+        }
+    }
+
+    // Update state when craft-station is closed
+    [HarmonyPatch(typeof(XUiC_CraftingWindowGroup))]
+    [HarmonyPatch("OnClose")]
+    public class XUiC_CraftingInfoWindow_onClose
+    {
+        static void Postfix()
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.SetCraftArea(null);
+        }
+    }
+
+    // Update state when work-station is opened
+    [HarmonyPatch(typeof(XUiC_WorkstationWindowGroup))]
+    [HarmonyPatch("OnOpen")]
+    public class XUiC_WorkstationWindowGroup_OnOpen
+    {
+        static void Postfix(XUiC_CraftingWindowGroup __instance)
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.SetCraftArea(__instance);
+        }
+    }
+
+    // Update state when work-station is closed
+    [HarmonyPatch(typeof(XUiC_WorkstationWindowGroup))]
+    [HarmonyPatch("OnClose")]
+    public class XUiC_WorkstationWindowGroup_onClose
+    {
+        static void Postfix()
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.SetCraftArea(null);
+        }
+    }
+
+    // Hook into UI startup when user is attached
+    [HarmonyPatch(typeof(LocalPlayerUI))]
+    [HarmonyPatch("DispatchNewPlayerForUI")]
+    public class LocalPlayerUI_DispatchNewPlayerForUI
+    {
+        static void Postfix()
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.OnSkillsChanged();
+        }
+    }
+
+    // Hook into Grandpa's Forgetting Elixir
+    [HarmonyPatch(typeof(Progression))]
+    [HarmonyPatch("ResetProgression")]
+    public class Progression_ResetProgression
+    {
+        static void Postfix()
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.OnSkillsChanged();
+        }
+    }
+
+    // Patch player data write to append our data
     [HarmonyPatch(typeof(PlayerDataFile))]
     [HarmonyPatch("Write")]
     public class PlayerDataFile_Write
     {
-        static void Postfix(PooledBinaryWriter _bw)
+        static void Postfix(
+            PlayerDataFile __instance,
+            PooledBinaryWriter _bw)
         {
             PinRecipesManager.Instance.WritePlayerData(_bw);
         }
     }
 
+    // Patch player data read to ingest our data
     [HarmonyPatch(typeof(PlayerDataFile))]
     [HarmonyPatch("Read")]
     public class PlayerDataFile_Read
     {
-        static void Postfix(PooledBinaryReader _br)
+        static void Postfix(
+            PlayerDataFile __instance,
+            PooledBinaryReader _br)
         {
-            PinRecipesManager.Instance.ReadPlayerData(_br);
+            PinRecipesManager.Instance.ReadPlayerData(_br, __instance.id);
         }
     }
-
-    // This would kinda work ...
-    // [HarmonyPatch(typeof(XUiC_RecipeCraftCount))]
-    // [HarmonyPatch("CalculateMaxCount")]
-    // public class XUiC_RecipeCraftCount_CalculateMaxCount
-    // {
-    //     static void Postfix(XUiC_RecipeCraftCount __instance)
-    //     {
-    //         // Allow to scroll there anyway
-    //         if (__instance.MaxCount < 99)
-    //             __instance.MaxCount = 99;
-    //     }
-    // }
-
-    // [HarmonyPatch(typeof(XUiC_WorkstationFuelGrid))]
-    // [HarmonyPatch("HandleSlotChangedEvent")]
-    // public class XUiC_WorkstationFuelGrid_HandleSlotChangedEvent
-    // {
-    //     static void Postfix()
-    //     {
-    //         if (!PinRecipesManager.HasInstance) return;
-    //         PinRecipesManager.Instance.SetWidgetsDirty();
-    //     }
-    // }
 
 }

@@ -31,6 +31,13 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ## Changelog
 
+### Version 0.5.0
+
+- Improves performance due to extensive caching
+- Less overhead due to using more correct hooks
+- Allows to change recipe count via mouse wheel
+- Shows small red overlay for locked recipes
+
 ### Version 0.4.3
 
 - Added Simplified Chinese translations (thx @future93)

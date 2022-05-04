@@ -5,6 +5,6 @@
 		<Description value="Pin recipes on your UI so you don't forget the ingredients." />
 		<Website value="https://github.com/OCB7D2D/OcbPinRecipes" />
 		<Author value="ocbMaurice" />
-		<Version value="0.4.3" compat="A20"/>
+		<Version value="0.5.0" compat="A20"/>
 	</ModInfo>
 </xml>
