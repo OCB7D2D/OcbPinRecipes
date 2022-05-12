@@ -51,7 +51,6 @@ public class PinRecipes : IModApi
         {
             if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.DetachPlayerAndInventory();
-            PinRecipesManager.Instance.Recipes.Clear();
         }
     }
 

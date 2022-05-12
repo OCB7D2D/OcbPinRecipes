@@ -161,6 +161,12 @@ public class PinRecipesManager
     // Btw. we store into `Saves/{World}/{SaveGame}/Player/EOS_XYZ.ttp`
     public void ReadPlayerData(PooledBinaryReader br, int entityId)
     {
+        // Check if we are reading for the same entityID
+        // Otherwise we do not update our pinned recipes
+        // But we must still fully consume the packet
+        bool isSameUser = (Player == null || Player.entityId == entityId);
+        if (isSameUser == true) Recipes.Clear();
+
         // Check if we have additional data to be read
         // This way we should be able to upgrade the stream if needed
         if (br.BaseStream.Position >= br.BaseStream.Length)
@@ -169,15 +175,9 @@ public class PinRecipesManager
             return;
         }
 
-        // Check if we are reading for the same entityID
-        // Otherwise we do not update our pinned recipes
-        // But we must still fully consume the packet
-        bool isSameUser = (Player == null || Player.entityId == entityId);
-
         CurrentFileVersion = br.ReadByte();
         int count = br.ReadInt32();
 
-        if (isSameUser == true) Recipes.Clear();
         for (int index = 0; index < count; ++index)
         {
             int amount = br.ReadInt32();
