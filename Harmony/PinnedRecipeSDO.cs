@@ -53,6 +53,7 @@ public class PinnedRecipeSDO
     {
         CorrectArea = false;
         if (window == null) return;
+        if (!PinRecipesManager.HasInstance) return;
         if (!CraftingRequirementsValid(window)) return;
         if (!IsCorrectCraftingArea(window)) return;
         CorrectArea = true;
@@ -62,16 +63,18 @@ public class PinnedRecipeSDO
     // You must check if you are at the correct craft area too
     public void UpdateIsCraftable()
     {
+        IsCraftable = false;
         if (Recipe == null) return;
         if (!PinRecipesManager.HasInstance) return;
-        IsCraftable =!IsLocked && HasEnoughCraftingMaterials();
+        IsCraftable = !IsLocked && HasEnoughCraftingMaterials();
     }
 
     // Call this when user stats have changed
     public void OnUserStatsChanged()
     {
+        if (!PinRecipesManager.HasInstance) return;
         // ToDo: is there a more direct way to get this?
-        var player = PinRecipesManager.Instance?.Player;
+        var player = PinRecipesManager.Instance.Player;
         // Bail out early if no user is attached yet
         if (player == null) return;
         // Tier seems only dependent on recipe

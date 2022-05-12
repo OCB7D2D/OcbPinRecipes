@@ -36,8 +36,8 @@ public class PinRecipes : IModApi
     {
         static void Postfix()
         {
-            if (!PinRecipesManager.HasInstance) return;
             XUi xui = LocalPlayerUI.GetUIForPrimaryPlayer()?.xui;
+            // Force instance; player wouldn't be known otherwise
             PinRecipesManager.Instance.AttachPlayerAndInventory(xui);
         }
     }
@@ -51,6 +51,7 @@ public class PinRecipes : IModApi
         {
             if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.DetachPlayerAndInventory();
+            PinRecipesManager.Instance.Recipes.Clear();
         }
     }
 
@@ -88,7 +89,6 @@ public class PinRecipes : IModApi
     {
         static void Postfix(XUiC_CraftingWindowGroup __instance)
         {
-            if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager manager = PinRecipesManager.Instance;
             manager.MenusOpen += 1;
             if (manager.MenusOpen == 1)
@@ -103,7 +103,6 @@ public class PinRecipes : IModApi
     {
         static void Postfix()
         {
-            if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager manager = PinRecipesManager.Instance;
             manager.MenusOpen -= 1;
             if (manager.MenusOpen == 0)
@@ -118,7 +117,6 @@ public class PinRecipes : IModApi
     {
         static void Postfix(XUiC_CraftingWindowGroup __instance)
         {
-            if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.SetCraftArea(__instance);
         }
     }
@@ -130,7 +128,6 @@ public class PinRecipes : IModApi
     {
         static void Postfix()
         {
-            if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.SetCraftArea(null);
         }
     }
@@ -142,7 +139,6 @@ public class PinRecipes : IModApi
     {
         static void Postfix(XUiC_CraftingWindowGroup __instance)
         {
-            if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.SetCraftArea(__instance);
         }
     }
@@ -154,7 +150,6 @@ public class PinRecipes : IModApi
     {
         static void Postfix()
         {
-            if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.SetCraftArea(null);
         }
     }
@@ -166,7 +161,6 @@ public class PinRecipes : IModApi
     {
         static void Postfix()
         {
-            if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.OnSkillsChanged();
         }
     }
@@ -178,7 +172,6 @@ public class PinRecipes : IModApi
     {
         static void Postfix()
         {
-            if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.OnSkillsChanged();
         }
     }

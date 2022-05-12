@@ -31,6 +31,10 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ## Changelog
 
+### Version 0.5.1
+
+- Fix issues with new worlds/players
+
 ### Version 0.5.0
 
 - Improves performance due to extensive caching
