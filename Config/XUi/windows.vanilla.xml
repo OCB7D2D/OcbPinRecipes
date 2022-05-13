@@ -1,0 +1,27 @@
+<configs>
+
+	<!-- Pinnable Recipes -->
+	<append xpath="/windows">
+
+		<!-- Left or Right side of screen -->
+		<!-- anchor = "LeftCenter" or "RightCenter" -->
+		<window name="windowPinRecipes" anchor="RightCenter" visible="true">
+
+			<!-- pos = "-185,280" or "-185,280" -->
+			<grid rows="10" pos="-185,280" width="170" height="560"
+			      cell_height="70" cell_width="170" arrangement="vertical">
+
+				<pinned_recipe_row/>
+				<pinned_recipe_row/>
+				<pinned_recipe_row/>
+				<pinned_recipe_row/>
+				<pinned_recipe_row/>
+				<pinned_recipe_row/>
+
+			</grid>
+
+		</window>
+
+	</append>
+
+</configs>
