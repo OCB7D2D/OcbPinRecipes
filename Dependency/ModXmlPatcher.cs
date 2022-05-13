@@ -1,4 +1,28 @@
-﻿using HarmonyLib;
+﻿/* MIT License
+
+Copyright (c) 2022 OCB7D2D
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +47,7 @@ static class ModXmlPatcher
             return callback();
         }
         // Otherwise check if a mod with that name exists
+        // ToDo: maybe do something with ModInfo.version?
         else if (ModManager.GetMod(condition) != null)
         {
             return true;
@@ -142,14 +167,6 @@ static class ModXmlPatcher
         return result;
     }
 
-    // Entry point from main harmony hook replacing `XmlPatcher.PatchXml`
-    public static bool PatchXml(XmlFile _xmlFile, XmlFile _patchXml, string _patchName)
-    {
-        XmlElement element = _patchXml.XmlDoc.DocumentElement;
-        if (element == null) return false;
-        return PatchXml(_xmlFile, _patchXml, element, _patchName);
-    }
-
     // Flags for consecutive mod-if parsing
     private static bool IfClauseParsed = false;
     private static bool PreviousResult = false;
@@ -261,9 +278,17 @@ static class ModXmlPatcher
     {
         static bool Prefix(XmlFile _xmlFile, XmlFile _patchXml, string _patchName, ref bool __result)
         {
+            XmlElement element = _patchXml.XmlDoc.DocumentElement;
+            if (element == null) return false;
+            string version = element.GetAttribute("patcher-version");
+            if (!string.IsNullOrEmpty(version))
+            {
+                // Check if version is too new for us
+                if (int.Parse(version) > 1) return true;
+            }
             // Call out to static helper function
-            __result = ModXmlPatcher.PatchXml(
-                _xmlFile, _patchXml, _patchName);
+            __result = ModXmlPatcher.PatchXml(_xmlFile,
+                _patchXml, element, _patchName);
             // Last one wins
             return false;
         }
