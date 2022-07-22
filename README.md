@@ -23,6 +23,22 @@ here on GitHub if you find any issues with it.
 
 [![GitHub CI Compile Status][4]][3]
 
+## Grab ingredients QOL feature
+
+With version 0.6.0 I've added another Quality of Life feature.
+Loot containers (e.g. your own storage chests) and vehicle
+containers get an additional button next to the "sort container"
+button. When you press this "grab ingredient" button, it will try
+to load as many items from the container as the pinned recipes
+require. For even more convenience, this action is also available
+by pressing `G` while the container is open. This key-binding
+can be adjusted (or removed) in the XML config if required.
+
+Currently the same button is also shown as a hand above the
+pinned recipes. This is mostly to make users aware of this
+feature and might be removed in the future. It may also be
+helpful if your UI overwrites the item stack controller.
+
 ## Download and Install
 
 Simply [download here from GitHub][2] and put into your A20 Mods folder:
@@ -34,6 +50,7 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 ### Version 0.6.0
 
 - Add "grab ingredients" functionality
+- Prepare for more compatibility patches
 
 ### Version 0.5.2
 

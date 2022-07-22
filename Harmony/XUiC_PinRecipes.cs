@@ -51,8 +51,9 @@ public class XUiC_PinRecipes : XUiController
     {
         base.Update(_dt);
         if (!XUi.IsGameRunning()) return;
-        if (KeyBinding != KeyCode.None && Input.GetKeyDown(KeyBinding))
-            PinRecipesManager.OptInstance?.GrabIngredients();
+        if (PinRecipesManager.HasInstance && PinRecipesManager.IsMenuOpen())
+            if (KeyBinding != KeyCode.None && Input.GetKeyDown(KeyBinding))
+                PinRecipesManager.Instance.GrabIngredients();
         if (IsDirty == false) return;
         RefreshBindings();
         IsDirty = false;
