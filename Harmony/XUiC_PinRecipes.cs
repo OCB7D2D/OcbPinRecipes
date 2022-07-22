@@ -35,6 +35,7 @@ public class XUiC_PinRecipes : XUiController
     public override void OnOpen()
     {
         base.OnOpen();
+        IsDirty = true;
         PinRecipesManager.Instance
             .RegisterWindow(this);
     }
@@ -75,17 +76,18 @@ public class XUiC_PinRecipes : XUiController
                 else
                     value = "0";
                 return true;
-            case "isLootContainer":
-                bool? looting = xui?.playerUI?.windowManager?.IsWindowOpen("looting");
-                value = (looting != null && looting.Value).ToString();
+            case "hasContainer":
+                value = false.ToString();
+                // Checking xui.lootContainer seems to early for here
+                if (xui?.playerUI?.windowManager is GUIWindowManager mgr)
+                    if (PinRecipesManager.IsMenuOpen())
+                        value = (mgr.IsWindowOpen("looting") ||
+                            xui?.vehicle?.bag != null).ToString();
                 return true;
             case "isMenuOpen":
             case "hasCraftArea": // deprecated
-                if (PinRecipesManager.HasInstance)
-                    value = (PinRecipesManager.Instance
-                        .MenusOpen > 0).ToString();
-                else
-                    value = "false";
+                value = PinRecipesManager.
+                    IsMenuOpen().ToString();
                 return true;
         }
         value = string.Empty;

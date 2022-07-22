@@ -20,6 +20,12 @@ public class PinRecipesManager
 
     public XUiC_CraftingWindowGroup CraftArea = null;
 
+    public static bool IsMenuOpen()
+    {
+        if (HasInstance == false) return false;
+        return Instance.MenusOpen > 0;
+    }
+
     public int MenusOpen = 0;
 
     public byte CurrentFileVersion { get; set; }
@@ -206,25 +212,160 @@ public class PinRecipesManager
         }
     }
 
-    public void GrabIngredients()
+    // We can't use Equals since `Seed` is different!?
+    private bool IsValidItemValue(ItemValue a, ItemValue b)
+    {
+        if (a == null)
+        {
+            return b == null;
+        }
+        else if (b == null)
+        {
+            return false;
+        }
+        else if (a.HasQuality)
+        {
+            return b.HasQuality
+                && a.type == b.type
+                && a.Quality == b.Quality;
+        }
+        else
+        {
+            return a.type == b.type;
+        }
+    }
+
+    private bool IsValidItemValue(ItemStack a, ItemStack b)
+    {
+        return IsValidItemValue(a?.itemValue, b?.itemValue);
+    }
+
+    private int GetAvailableItems(ItemStack wanted, ItemStack[] bag)
+    {
+        int available = 0;
+        foreach (ItemStack item in bag)
+        {
+            if (item == null || item.IsEmpty()) continue;
+            if (!IsValidItemValue(item, wanted)) continue;
+            available += item.count;
+            if (available >= wanted.count) break;
+        }
+        return Utils.FastMin(available, wanted.count);
+    }
+
+    // Remove items from container (decreasing count in `taken`)
+    private bool RemoveFromContainer(ItemStack[] container, ItemStack taken)
     {
         bool changed = false;
+        for (int i = 0; i < container.Length; i += 1)
+        {
+            // Check if container has the specific item in this slot
+            if (container[i] == null || container[i].IsEmpty()) continue;
+            if (!IsValidItemValue(container[i], taken)) continue;
+            // Check if we have less than we want
+            // Full stack will be taken, left empty
+            if (container[i].count <= taken.count)
+            {
+                taken.count -= container[i].count;
+                container[i].Clear();
+                changed = true;
+            }
+            // Otherwise stack has all we need
+            else if (container[i].count > 0)
+            {
+                container[i].count -= taken.count;
+                taken.count = 0;
+                changed = true;
+                break;
+            }
+        }
+        return changed;
+    }
+
+
+    private Dictionary<int, int> ingredients = new Dictionary<int, int>();
+
+    public bool GrabRequiredItems(XUiM_PlayerInventory inventory,
+        ref ItemStack[] items, List<PinnedRecipeSDO> recipes)
+    {
+        bool changed = false;
+        // Re-use container
+        ingredients.Clear();
+        // Cant do one by one, as it will not sum up the
+        // wanted ingredients (would only add the maximum)
+        foreach (PinnedRecipeSDO recipe in recipes)
+        {
+            foreach (PinnedIngredientSDO ingredient in recipe.Ingredients)
+            {
+                int type = ingredient.ItemValue.type;
+                var wanted = ingredient.Needed - ingredient.Available;
+                if (wanted <= 0) continue; // Already enough?
+                if (ingredients.ContainsKey(type))
+                    ingredients[type] += wanted;
+                else ingredients.Add(type, wanted);
+            }
+        }
+        // Try to grab items for all ingredients
+        foreach (var ingredient in ingredients)
+        {
+            var iv = new ItemValue(ingredient.Key);
+            var stack = new ItemStack(iv, ingredient.Value);
+            int take = stack.count = GetAvailableItems(stack, items);
+            // Abort if nothing to be taken
+            if (stack.count == 0) continue;
+            // Ignore return value, since it will only
+            // return true if all items have been added
+            // It will still take items partially though
+            inventory.AddItem(stack);
+            // Check if any items are taken at all
+            if (stack.count == take) continue;
+            // Calculate items to remove from container
+            stack.count = take - stack.count;
+            changed |= RemoveFromContainer(items, stack);
+        }
+        // Re-use container
+        ingredients.Clear();
+        return changed;
+    }
+
+    private void GrabIngredients(TileEntityLootContainer container)
+    {
         if (XUI == null) return;
-        var container = XUI.lootContainer;
         if (container == null) return;
         var inventory = XUI.PlayerInventory;
         if (inventory == null) return;
-        foreach (PinnedRecipeSDO recipe in Recipes)
-            changed |= recipe.GrabRequiredItems(inventory, container);
-        // Check if something changed
-        if (changed == false) return;
-        // Re-implement `TileEntityChanged`, since it is private
-        // E.g. see how `TileEntityLootContainer.UpdateSlot` works
-        for (int index = 0; index < container.listeners.Count; ++index)
-            container.listeners[index].OnTileEntityChanged(container, 0);
-        // See `SetEmpty()`
-        container.bTouched = true;
-        container.SetModified();
+        // Fetch ingredients for all pinned recipes
+        ItemStack[] slots = container.GetItems();
+        if (GrabRequiredItems(inventory, ref slots, Recipes))
+        {
+            // Re-implement `TileEntityChanged`, since it is private
+            // E.g. see how `TileEntityLootContainer.UpdateSlot` works
+            for (int index = 0; index < container.listeners.Count; ++index)
+                container.listeners[index].OnTileEntityChanged(container, 0);
+            // See `SetEmpty()`
+            container.bTouched = true;
+            container.SetModified();
+        }
+    }
+
+    private void GrabIngredients(Bag container)
+    {
+        if (XUI == null) return;
+        if (container == null) return;
+        var inventory = XUI.PlayerInventory;
+        if (inventory == null) return;
+        // Fetch ingredients for all pinned recipes
+        ItemStack[] slots = container.GetSlots();
+        if (GrabRequiredItems(inventory, ref slots, Recipes))
+            container.SetSlots(slots);
+    }
+
+    public void GrabIngredients()
+    {
+        if (XUI == null) return;
+        Log.Out("Grab the ingredients now");
+        if (XUI.lootContainer != null) GrabIngredients(XUI.lootContainer);
+        else if (XUI.vehicle?.bag != null) GrabIngredients(XUI.vehicle.bag);
     }
 
 }
