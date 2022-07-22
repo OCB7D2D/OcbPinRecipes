@@ -34,6 +34,8 @@ require. For even more convenience, this action is also available
 by pressing `G` while the container is open. This key-binding
 can be adjusted (or removed) in the XML config if required.
 
+![In-Game Grab Ingredients](Screens/in-game-grab-ingredients.png)
+
 Currently the same button is also shown as a hand above the
 pinned recipes. This is mostly to make users aware of this
 feature and might be removed in the future. It may also be
