@@ -1,13 +1,35 @@
+using UnityEngine;
+using XMLData.Parsers;
+
 public class XUiC_PinRecipes : XUiController
 {
 
-    public static string ID = "";
+    public static string ID = string.Empty;
+
+    public KeyCode KeyBinding = KeyCode.None;
 
     public override void Init()
     {
         base.Init();
+        KeyBinding = KeyCode.None;
+        if (GetChildById("btnGrab") is XUiController grab) grab.OnPress += OnGrab;
+        // Must fetch from other node, since window group has no custom attributes
+        var attributes = xui?.GetWindow("windowPinRecipes")?.Controller?.CustomAttributes;
+        if (attributes.TryGetValue("grab_key_binding", out string value))
+            KeyBinding = EnumParser.Parse<KeyCode>(value);
         ID = WindowGroup.ID;
         IsDirty = true;
+    }
+
+    public override void Cleanup()
+    {
+        base.Cleanup();
+        if (GetChildById("btnGrab") is XUiController grab) grab.OnPress -= OnGrab;
+    }
+
+    private void OnGrab(XUiController sender, int mouseButton)
+    {
+        PinRecipesManager.OptInstance?.GrabIngredients();
     }
 
     public override void OnOpen()
@@ -28,6 +50,8 @@ public class XUiC_PinRecipes : XUiController
     {
         base.Update(_dt);
         if (!XUi.IsGameRunning()) return;
+        if (KeyBinding != KeyCode.None && Input.GetKeyDown(KeyBinding))
+            PinRecipesManager.OptInstance?.GrabIngredients();
         if (IsDirty == false) return;
         RefreshBindings();
         IsDirty = false;
@@ -50,6 +74,10 @@ public class XUiC_PinRecipes : XUiController
                         .Recipes.Count.ToString();
                 else
                     value = "0";
+                return true;
+            case "isLootContainer":
+                bool? looting = xui?.playerUI?.windowManager?.IsWindowOpen("looting");
+                value = (looting != null && looting.Value).ToString();
                 return true;
             case "isMenuOpen":
             case "hasCraftArea": // deprecated

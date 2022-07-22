@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 public class PinRecipesManager
 {
@@ -22,6 +23,8 @@ public class PinRecipesManager
     public int MenusOpen = 0;
 
     public byte CurrentFileVersion { get; set; }
+
+    public static PinRecipesManager OptInstance => instance;
 
     public static PinRecipesManager Instance
     {
@@ -201,6 +204,27 @@ public class PinRecipesManager
             bw.Write(recipe.Count);
             bw.Write(recipe.Recipe.GetName());
         }
+    }
+
+    public void GrabIngredients()
+    {
+        bool changed = false;
+        if (XUI == null) return;
+        var container = XUI.lootContainer;
+        if (container == null) return;
+        var inventory = XUI.PlayerInventory;
+        if (inventory == null) return;
+        foreach (PinnedRecipeSDO recipe in Recipes)
+            changed |= recipe.GrabRequiredItems(inventory, container);
+        // Check if something changed
+        if (changed == false) return;
+        // Re-implement `TileEntityChanged`, since it is private
+        // E.g. see how `TileEntityLootContainer.UpdateSlot` works
+        for (int index = 0; index < container.listeners.Count; ++index)
+            container.listeners[index].OnTileEntityChanged(container, 0);
+        // See `SetEmpty()`
+        container.bTouched = true;
+        container.SetModified();
     }
 
 }
