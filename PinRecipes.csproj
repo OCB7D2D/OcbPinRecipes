@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\ModXmlPatcher.cs" />
     <Compile Include="Harmony\PinnedIngredientSDO.cs" />
     <Compile Include="Harmony\PinnedRecipeSDO.cs" />
     <Compile Include="Harmony\PinRecipes.cs" />
