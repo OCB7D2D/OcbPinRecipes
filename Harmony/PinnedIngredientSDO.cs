@@ -19,6 +19,8 @@ public class PinnedIngredientSDO
 
     public Recipe Recipe => RDO?.Recipe;
 
+    public ItemValue ItemValue => Ingredient?.itemValue;
+
     public ItemStack Ingredient => Recipe?.ingredients[Index];
 
     public int Needed => (int)(Need * RDO?.Count);

@@ -201,4 +201,24 @@ public class PinRecipes : IModApi
         }
     }
 
+    // ****************************************************
+    // Implementation for grabbing ingredients from loot:
+    // ****************************************************
+
+    [HarmonyPatch(typeof(XUiC_ContainerStandardControls))]
+    [HarmonyPatch("Init")]
+    public class XUiC_ContainerStandardControls_Init
+    {
+        static void Postfix(XUiC_ContainerStandardControls __instance)
+        {
+            XUiController grab = __instance.GetChildById("btnPinGrab");
+            if (grab != null) grab.OnPress += Grab_OnPress;
+        }
+        private static void Grab_OnPress(XUiController _sender, int _mouseButton)
+        {
+            if (!PinRecipesManager.HasInstance) return;
+            PinRecipesManager.Instance.GrabIngredients();
+        }
+    }
+
 }

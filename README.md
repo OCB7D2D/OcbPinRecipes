@@ -31,6 +31,10 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ## Changelog
 
+### Version 0.6.0
+
+- Add "grab ingredients" functionality
+
 ### Version 0.5.2
 
 - Fix issue with persisting recipes

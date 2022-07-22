@@ -5,7 +5,18 @@
 
 		<!-- Left or Right side of screen -->
 		<!-- anchor = "LeftCenter" or "RightCenter" -->
-		<window name="windowPinRecipes" anchor="RightCenter" visible="true">
+		<window name="windowPinRecipes" anchor="RightCenter" visible="true" grab_key_binding="G">
+
+			<!-- Button to increment amount of items to be made -->
+			<button pos="-35,300" width="20" height="20"
+					name="btnGrab" type="sliced" hoverscale="1.2"
+					sprite="ui_game_symbol_hand"
+					defaultcolor="240,240,240,220"
+					justify="center" pivot="center"
+					sound="[paging_click]"
+					foregroundlayer="true"
+					visible="{isLootContainer}"
+					tooltip_key="xuiPinGrab" />
 
 			<!-- pos = "-185,280" or "-185,280" -->
 			<grid rows="10" pos="-185,280" width="170" height="560"
@@ -21,6 +32,17 @@
 			</grid>
 
 		</window>
+
+	</append>
+
+	<append xpath="/windows/window[@name='windowLooting']/panel[@name='header']/rect[@controller='ContainerStandardControls']">
+
+		<button depth="3" name="btnPinGrab"
+				sprite="ui_game_symbol_pin"
+				tooltip_key="xuiPinGrab"
+				pos="154, -22" pivot="center"
+				style="icon32px, press, hover" 
+				sound="[paging_click]" />
 
 	</append>
 
