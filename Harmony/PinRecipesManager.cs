@@ -43,6 +43,8 @@ public class PinRecipesManager
 
     public static bool HasInstance => instance != null;
 
+    public static bool HasRecipes => HasInstance && instance.Recipes.Count > 0;
+
     private PinRecipesManager()
     {
         instance = this;
@@ -106,6 +108,16 @@ public class PinRecipesManager
             ui.SetAllChildrenDirty();
     }
 
+    // Refresh loot containers on "Unpin"
+    // Currently only refreshes "grab" icon
+    public void RefreshContainers()
+    {
+        var vehicle = XUI?.FindWindowGroupByName(XUiC_VehicleStorageWindowGroup.ID);
+        if (vehicle != null) vehicle.RefreshBindingsSelfAndChildren();
+        var loot = XUI?.FindWindowGroupByName(XUiC_LootWindowGroup.ID);
+        if (loot != null) loot.RefreshBindingsSelfAndChildren();
+    }
+
     // We only really support one window currently
     public void RegisterWindow(XUiC_PinRecipes widget)
     {
@@ -148,6 +160,7 @@ public class PinRecipesManager
     {
         Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea));
         HandleSlotUpdate(Recipes.Count - 1);
+        SetWidgetsDirty();
     }
 
     // Remove a pin from the queue (for whatever reason)
@@ -159,6 +172,9 @@ public class PinRecipesManager
         Recipes.RemoveAt(slot);
         for (int i = slot; i < Slots.Count; i++)
             HandleSlotUpdate(i);
+        // Update "grab" button
+        RefreshContainers();
+        SetWidgetsDirty();
         return true;
     }
  

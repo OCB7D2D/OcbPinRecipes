@@ -42,6 +42,7 @@
 				tooltip_key="xuiPinGrab"
 				pos="154, -22" pivot="center"
 				style="icon32px, press, hover" 
+				visible="{hasPinnedRecipes}"
 				sound="[paging_click]" />
 
 	</append>

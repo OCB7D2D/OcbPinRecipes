@@ -49,6 +49,10 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ## Changelog
 
+### Version 0.6.1
+
+- Only show buttons if there are pinned recipes
+
 ### Version 0.6.0
 
 - Add "grab ingredients" functionality

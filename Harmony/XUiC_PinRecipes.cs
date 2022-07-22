@@ -81,7 +81,7 @@ public class XUiC_PinRecipes : XUiController
                 value = false.ToString();
                 // Checking xui.lootContainer seems to early for here
                 if (xui?.playerUI?.windowManager is GUIWindowManager mgr)
-                    if (PinRecipesManager.IsMenuOpen())
+                    if (PinRecipesManager.IsMenuOpen() && PinRecipesManager.HasRecipes)
                         value = (mgr.IsWindowOpen("looting") ||
                             xui?.vehicle?.bag != null).ToString();
                 return true;

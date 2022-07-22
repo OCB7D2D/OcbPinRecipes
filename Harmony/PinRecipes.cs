@@ -203,6 +203,46 @@ public class PinRecipes : IModApi
         }
     }
 
+    // Add new field to loot containers
+    [HarmonyPatch(typeof(XUiC_LootWindow))]
+    [HarmonyPatch("GetBindingValue")]
+    public class XUiC_LootWindow_GetBindingValue
+    {
+        static bool Prefix(
+            ref string _value,
+            string _bindingName,
+            ref bool __result)
+        {
+            if (_bindingName == "hasPinnedRecipes")
+            {
+                _value = PinRecipesManager.HasRecipes.ToString();
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+    }
+
+    // Add new field to vehicle containers
+    [HarmonyPatch(typeof(XUiC_VehicleContainer))]
+    [HarmonyPatch("GetBindingValue")]
+    public class XUiC_VehicleContainer_GetBindingValue
+    {
+        static bool Prefix(
+            ref string _value,
+            string _bindingName,
+            ref bool __result)
+        {
+            if (_bindingName == "hasPinnedRecipes")
+            {
+                _value = PinRecipesManager.HasRecipes.ToString();
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+    }
+
     // ****************************************************
     // Implementation for grabbing ingredients from loot:
     // ****************************************************
