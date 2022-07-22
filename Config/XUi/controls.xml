@@ -1,4 +1,9 @@
 <configs patcher-version="1">
 
 	<include path="controls.a20.xml"/>
+
+	<modif condition="SMXhud">
+		<include path="controls.smx.xml"/>
+	</modif>
+
 </configs>

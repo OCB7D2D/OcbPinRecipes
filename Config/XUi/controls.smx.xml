@@ -1,0 +1,128 @@
+<ZMXhudCPOCBPR file="XUi/controls.xml">
+
+<!--	// SMX // OCB PinRecipes Visibility Checks -->
+
+		<!-- SMX COMMENT: Visiblity checks for the buttons. Set to MOD default, change to true without {} for always show. -->
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Increment']/@visible">{hasCraftArea}</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Decrement']/@visible">{showDecrement}</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Unpin']/@visible">{hasCraftArea}</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Craft']/@visible">{canCraft}</set>
+
+
+<!--	// SMX // OCB PinRecipes Injection Patch for SMXhud -->
+
+		<!-- SMX COMMENT: Sets main rect width and height. -->
+		<set xpath="/controls/pinned_recipe_row/rect/@width">230</set>
+		<set xpath="/controls/pinned_recipe_row/rect/@height">60</set>
+
+		<!-- SMX COMMENT: Sets main background sprite width, height and color(From SMXcore). -->
+		<set xpath="/controls/pinned_recipe_row/rect/sprite[1]/@width">230</set>
+		<set xpath="/controls/pinned_recipe_row/rect/sprite[1]/@height">60</set>
+		<set xpath="/controls/pinned_recipe_row/rect/sprite[1]/@color">[smxhud_element_background]</set>
+
+	<!-- SMX COMMENT: The section below is the recipe itemtitle, it is enabled below. Uncomment this and comment the section below to deactivate this if you don't want to use it. -->
+		<!-- SMX COMMENT: Removes itemname label. -->
+		<!--remove xpath="/controls/pinned_recipe_row/rect/rect/label[@text='{title}']" /-->
+	<!-- SMX COMMENT: The section above is the itemtitle, it is enabled below. Uncomment this and comment the section above to deactivate this if you don't want to use it. -->
+
+		<!-- SMX COMMENT: Injects hover attribute with sound and the itemname label as tooltip on background sprite mouseover. -->
+		<setattribute xpath="/controls/pinned_recipe_row/rect/sprite[1]" name="on_hover">true</setattribute>
+		<setattribute xpath="/controls/pinned_recipe_row/rect/sprite[1]" name="sound_play_on_hover">[default_hover]</setattribute>
+		<setattribute xpath="/controls/pinned_recipe_row/rect/sprite[1]" name="tooltip">{title}</setattribute>
+
+		<!-- SMX COMMENT: Injects custom background sprite and sets its opacity deviation. (From SMXcore) -->
+		<setattribute xpath="/controls/pinned_recipe_row/rect/sprite[1]" name="sprite">smxhud_chat_background</setattribute>
+		<setattribute xpath="/controls/pinned_recipe_row/rect/sprite[1]" name="globalopacitymod">1.4</setattribute>
+
+		<!-- SMX COMMENT: Removes unused sprite. -->
+		<remove xpath="/controls/pinned_recipe_row/rect/sprite[2]" />
+
+		<!-- SMX COMMENT: Injects flip attribute for unpin button icon to reverse it. -->
+		<setattribute xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Unpin']" name="flip">horizontally</setattribute>
+
+		<!-- SMX COMMENT: Sets UNPIN button position, width, height and sprite value. -->
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Unpin']/@pos">185,-5</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Unpin']/@width">16</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Unpin']/@height">16</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Unpin']/@sprite">ui_game_symbol_pin</set>
+
+		<!-- SMX COMMENT: Sets HAMMER button position, width and height. -->
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Craft']/@pos">204,-20</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Craft']/@width">25</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Craft']/@height">25</set>
+
+		<!-- SMX COMMENT: Sets INCREMENT button position, width and height. -->
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Increment']/@pos">215,-48</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Increment']/@width">12</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Increment']/@height">12</set>
+
+		<!-- SMX COMMENT: Sets DECREMENT button position, width and height. -->
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Decrement']/@pos">195,-48</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Decrement']/@width">12</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/button[@name='Decrement']/@height">12</set>
+
+		<!-- SMX COMMENT: Inserts custom background and slot frame artwork for the recipe itemicon. (From SMXcore) -->
+		<insertBefore xpath="/controls/pinned_recipe_row/rect/rect/sprite[@atlas='ItemIconAtlas']">
+			<sprite name="background" depth="1" pos="204,-20" width="38" height="38" type="sliced" pivot="center" color="[smxhud_element_background]" globalopacitymod="1.3" />
+			<sprite name="slot_frame" depth="3" pos="204,-20" width="38" height="38" sprite="smxlib_slot_frame_narrow" pivot="center" color="[mediumGrey]" globalopacitymod="1.8" />
+		</insertBefore>
+
+		<!-- SMX COMMENT: Injects pos and pivot values to the recipe itemicon. -->
+		<setattribute xpath="/controls/pinned_recipe_row/rect/rect/sprite[3]" name="pos">204,-20</setattribute>
+		<setattribute xpath="/controls/pinned_recipe_row/rect/rect/sprite[3]" name="pivot">center</setattribute>
+
+		<!-- SMX COMMENT: Sets the recipe itemicon depth value. -->
+		<set xpath="/controls/pinned_recipe_row/rect/rect/sprite[3]/@depth">4</set>
+
+	<!-- SMX COMMENT: The section below is the recipe itemtitle, it can be removed above. Uncomment the remove above and comment this section to deactivate this if you don't want to use it. -->
+		<!-- SMX COMMENT: Sets recipe itemname label pos, height, font size and justify values. -->
+		<!-- SMX COMMENT: Injects effect color, distance and crispness attributes to recipe itemtitle. -->
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@text='{title}']/@pos">90,-48</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@text='{title}']/@width">130</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@text='{title}']/@height">20</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@text='{title}']/@font_size">12</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@text='{title}']/@justify">right</set>
+		<setattribute xpath="/controls/pinned_recipe_row/rect/rect/label[@text='{title}']" name="effect_color">20,20,20,230</setattribute>
+		<setattribute xpath="/controls/pinned_recipe_row/rect/rect/label[@text='{title}']" name="effect_distance">1,1</setattribute>
+		<setattribute xpath="/controls/pinned_recipe_row/rect/rect/label[@text='{title}']" name="crispness">Always</setattribute>
+	<!-- SMX COMMENT: The section above is the recipe itemtitle, it can be removed above. Uncomment the remove above and comment this section to deactivate this if you don't want to use it. -->
+
+		<!-- SMX COMMENT: Sets itemcount label . -->
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@name='count']/@pos">110,-47</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@name='count']/@width">140</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@name='count']/@height">22</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@name='count']/@font_size">14</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@name='count']/@justify">right</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@name='count']/@pivot">center</set>
+		<set xpath="/controls/pinned_recipe_row/rect/rect/label[@name='count']/@text">x{amount}</set>
+
+		<!-- SMX COMMENT: Injects pivot attributes to ingredient grid to flip it. -->
+		<setattribute xpath="/controls/pinned_recipe_row/rect/rect/grid" name="pivot">right</setattribute>
+
+		<!-- SMX COMMENT: Sets pos value for the ingredient grid. -->
+		<set xpath="/controls/pinned_recipe_row/rect/rect[2]/@pos">184,-16</set>
+
+		<!-- SMX COMMENT: Inserts custom background and slot frame artwork for the ingredient itemicon. (From SMXcore) -->
+		<insertBefore xpath="/controls/pinned_recipe_ingredient_row/rect/sprite[@atlas='ItemIconAtlas']">
+			<sprite name="background" depth="1" pos="18,-18" width="32" height="32" type="sliced" pivot="center" color="[smxhud_element_background]" globalopacitymod="1.3" />
+			<sprite name="slot_frame" depth="3" pos="18,-18" width="32" height="32" sprite="smxlib_slot_frame_narrow" pivot="center" color="[mediumGrey]" globalopacitymod="1.8" />
+		</insertBefore>
+
+		<!-- SMX COMMENT: Injects pos and pivot values to ingredient itemicon. -->
+		<setattribute xpath="/controls/pinned_recipe_ingredient_row/rect/sprite[@atlas='ItemIconAtlas']" name="pos">16,-16</setattribute>
+		<setattribute xpath="/controls/pinned_recipe_ingredient_row/rect/sprite[@atlas='ItemIconAtlas']" name="width">22</setattribute>
+		<setattribute xpath="/controls/pinned_recipe_ingredient_row/rect/sprite[@atlas='ItemIconAtlas']" name="height">22</setattribute>
+		<setattribute xpath="/controls/pinned_recipe_ingredient_row/rect/sprite[@atlas='ItemIconAtlas']" name="pivot">center</setattribute>
+
+		<!-- SMX COMMENT: Injects a pos value for the ingredient complete checkmark. -->
+		<setattribute xpath="/controls/pinned_recipe_ingredient_row/rect/sprite[@visible='{hasEnough}']" name="pos">26,-22</setattribute>
+
+		<!-- SMX COMMENT: Sets width and height values for the ingredient complete checkmark. -->
+		<set xpath="/controls/pinned_recipe_ingredient_row/rect/sprite[@visible='{hasEnough}']/@width">14</set>
+		<set xpath="/controls/pinned_recipe_ingredient_row/rect/sprite[@visible='{hasEnough}']/@height">14</set>
+
+		<!-- SMX COMMENT: Sets pos and font_size values for the ingredient amount counter. -->
+		<set xpath="/controls/pinned_recipe_ingredient_row/rect/label/@pos">18,-18</set>
+		<set xpath="/controls/pinned_recipe_ingredient_row/rect/label/@font_size">14</set>
+
+</ZMXhudCPOCBPR>

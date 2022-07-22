@@ -1,5 +1,10 @@
 <configs patcher-version="1">
 
-	<include path="windows.a20.xml"/>
+	<modif condition="SMXhud">
+		<include path="windows.smx.xml"/>
+	</modif>
+	<modelse>
+		<include path="windows.a20.xml"/>
+	</modelse>
 
 </configs>

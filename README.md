@@ -34,6 +34,8 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 ### Version 0.6.0
 
 - Add "grab ingredients" functionality
+- Add Darkness Falls compatibility
+- Include SMX compatibility patch
 
 ### Version 0.5.2
 

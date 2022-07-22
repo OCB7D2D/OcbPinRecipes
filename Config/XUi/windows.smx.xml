@@ -1,0 +1,86 @@
+<ZMXhudCPOCBPR name="XUi/windows.xml">
+
+<!--	// MODLET:			ZMXhudCPOCBPR
+
+		// EAC:				Non Friendly, SMX requires EAC to be DISABLED.
+
+		// VERSION:			r20.rc2
+
+		// BUILD:			A20.4
+
+		// DISCLAIMER:		Please be advised that this modlet is intended for use with the build mentioned above. That said it may very well be that
+							it can be used with other builds with little to no risk of failure. It all depends on the standard files being updated or not
+							and you can verify this by looking at the date of the standard files when an update have occured.
+
+		// MOD DESCRIPTION:	The purpose of this modlet is to enable compatibility with the OCB Pin Recipies mod and convert it to fit the SMX art style.
+
+		// DEPENDENCIES:	SMXcore, SMXhud.
+
+		// TERMS OF USE:	1. You are allowed to use this modlet as is for your own personal use and/or on a server you run and/or administrate.
+
+							2. You are under no circumstance allowed to distribute any SMX and/or ZMX branded modlets without written consent from the main developer.
+
+							3. If you wish to distribute SMX and/or ZMX branded modlets as part of your own project and consent have been given you are required
+							to do so in such a way so that all the files of the SMX and/or ZMX modlet or modlets in question remain unaltered and you cannot
+							under any circumstance claim credit for creating the modlet or modlets or any of the files provided with it/them.
+
+							4. If consent is given you are required to make the changes as a new modlet that injects into the modlet in question and
+							keeping load order in mind it is to be named so that it loads AFTER the original modlet. The original modlet shall be distributed
+							as is with no change to its files what so ever.
+
+							5. If consent is given it is only given on a case to case basis and those that receive consent cannot pass that consent on to another
+							party or project. Nor will the consent pass on to other creators that opt to include consented work into their project.
+
+							6. You are not allowed to use any of the assets bundled with SMX and/or ZMX branded modlets in other projects. This restriction
+							applies to all files that the SMX and/or ZMX modlets consist of. EXCEPTION: The content of the Harmony folder is to be considered
+							open source and can be used freely as long as the original credit comments within the files are not removed or altered other than
+							adding to.
+
+							7. You are required to seek special consent from the main developer should you wish to make changes to any asset files provided with the
+							SMX and/or ZMX branded modlets.
+
+							8. You are required to inform the main developer when your project that contains any SMX and/or ZMX modlet or modlets have been made
+							available to the public.
+
+		// CREDITS:			Sirillion (main developer/designer/harmony/frontend/backend/author)
+							sphereii (developer/harmony/backend), TormentedEmu (developer/harmony/backend), Laydor (developer/harmony/backend)
+
+		// CONTRIBUTORS:	Mumpfy (art)
+-->
+
+<!--	// SMX // OCB PinRecipes -->
+
+		<append xpath="/windows">
+			<window name="windowPinRecipes" pos="-232,210" width="232" height="312" anchor="RightCenter" visible="true" grab_key_binding="G">
+
+				<!--sprite name="smx_window_revealer" color="[red]" type="sliced" /--> <!-- SMX COMMENT: Enable this one to reveal the borders of the window when changing window sizes. -->
+
+				<rect name="smx_pinrecipes_content" depth="1" pos="0,0">
+
+					<!--sprite name="smx_rect_revealer" color="[white]" type="sliced" /--> <!-- SMX COMMENT: Enable this one to reveal the borders of the rect when changing rect sizes and pos. -->
+
+					<grid name="smx_pinrecipes_grid" depth="0" pos="2,-2" width="327" rows="5" cols="1" cell_height="62" repeat_content="false" arrangement="vertical">
+						<pinned_recipe_row name="0" slot="0" />
+						<pinned_recipe_row name="1" slot="1" />
+						<pinned_recipe_row name="2" slot="2" />
+						<pinned_recipe_row name="3" slot="3" />
+						<pinned_recipe_row name="4" slot="4" />
+					</grid>
+				</rect>
+			</window>
+		</append>
+
+	<append xpath="/windows/window[@name='windowLooting']/rect[@name='smxui_lootwindow_design']/rect[@controller='ContainerStandardControls']">
+
+		<button name="btnPinGrab" depth="3"
+				pos="210,0" size="40,40"
+				style="press, hover, smxcore_icon_colors"
+				sprite="smxlib_ui_game_symbol_pin"
+				pivot="center" flip="horizontally"
+				tooltip_key="xuiPinGrab"
+				sound_play_on_hover="[default_hover]"
+				sound="[paging_click]" />
+
+	</append>
+
+</ZMXhudCPOCBPR>
