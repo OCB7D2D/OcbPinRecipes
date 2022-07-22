@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Collections.Generic;
 using System.Reflection;
 
 public class PinRecipes : IModApi
@@ -64,6 +65,7 @@ public class PinRecipes : IModApi
         static void Postfix(GUIWindowManager ___windowManager)
         {
             if (GameManager.Instance.IsPaused()) return;
+            if (XUiC_PinRecipes.ID == string.Empty) return;
             ___windowManager.OpenIfNotOpen(XUiC_PinRecipes.ID, false);
         }
     }
@@ -218,6 +220,49 @@ public class PinRecipes : IModApi
         {
             if (!PinRecipesManager.HasInstance) return;
             PinRecipesManager.Instance.GrabIngredients();
+        }
+    }
+
+    // ****************************************************
+    // Implementation to postpone our xml patching.
+    // Allows us to run after our dependencies :-)
+    // ****************************************************
+
+    // Return in our load order
+    [HarmonyPatch(typeof(ModManager))]
+    [HarmonyPatch("GetLoadedMods")]
+    public class ModManager_GetLoadedMods
+    {
+        static void Postfix(ref List<Mod> __result)
+        {
+            int myPos = -1, depPos = -1;
+            if (__result == null) return;
+            // Find position of mods we depend on
+            for (int i = 0; i < __result.Count; i += 1)
+            {
+                switch (__result[i].ModInfo.Name.Value)
+                {
+                    case "SMXui":
+                        depPos = i + 1;
+                        break;
+                    case "OcbPinRecipes":
+                        myPos = i;
+                        break;
+                }
+            }
+            // Didn't detect ourself?
+            if (myPos == -1)
+            {
+                Log.Error("Did not detect our own Mod?");
+                return;
+            }
+            // Detected no dependencies?
+            if (depPos == -1) return;
+            // Move our mod after deps
+            var item = __result[myPos];
+            __result.RemoveAt(myPos);
+            if (depPos > myPos) depPos--;
+            __result.Insert(depPos, item);
         }
     }
 
