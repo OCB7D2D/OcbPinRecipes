@@ -52,6 +52,7 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 ### Version 0.6.1
 
 - Allow double click on Ingredients to pin its recipe
+- Add automated translations for 27 languages via DeepL
 - Fix issue when workstation tools are changed
 - Fix storing recipe variants for same item name
 - Correctly cleanup when world is unloaded
