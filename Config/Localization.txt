@@ -4,3 +4,5 @@ xuiUnpinRecipe,ui,ui,Unpin,Entfernen,ピン留め解除,取下
 xuiIncrement,ui,ui,Increment,Mehr,作成数を増やす,增量
 xuiDecrement,ui,ui,Decrement,Weniger,作成数を減らす,减量
 xuiPinGrab,ui,ui,Grab ingredients for pinned recipes,Nimm Zutaten für gepinnte Rezepte,Grab ingredients for pinned recipes,Grab ingredients for pinned recipes
+ttNoRecipesForItem,UI,,No recipes found for item,
+ttManyRecipesForItem,UI,,"Multiple recipes found, pinning first",

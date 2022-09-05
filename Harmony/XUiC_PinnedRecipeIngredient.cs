@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class XUiC_PinnedRecipeIngredient : XUiController
 {
@@ -15,6 +17,57 @@ public class XUiC_PinnedRecipeIngredient : XUiController
     {
         IDO = ido;
         IsDirty = true;
+    }
+
+    public override void Init()
+    {
+        base.Init();
+        if (GetChildById("Ingredient") is XUiController ingredient)
+            ingredient.OnDoubleClick += OnIngredientPin;
+    }
+
+    private void OnIngredientPin(XUiController sender, int mouseButton)
+    {
+        // Play safe and check first
+        if (IDO?.Ingredient == null) return;
+        ItemStack ingredient = IDO.Ingredient;
+
+        // Get the required delta amount
+        int amount = IDO.Needed - IDO.Available;
+
+        // Make sure to always pin one
+        if (amount < 1) amount = 1;
+
+        string name = ingredient.itemValue.ItemClass.GetItemName();
+        List<Recipe> recipes = CraftingManager.GetRecipes(name);
+
+        // Make sure we don't have any recipes without ingredients
+        recipes.RemoveAll(recipe => recipe.ingredients.Count == 0);
+
+        // Make sure we don't have any material based recipes
+        recipes.RemoveAll(recipe => recipe.materialBasedRecipe);
+
+        // Check if we have no recipes at all (abort)
+        if (recipes.Count == 0)
+        {
+            GameManager.ShowTooltip(
+                XUiM_Player.GetPlayer() as EntityPlayerLocal,
+                Localization.Get("ttNoRecipesForItem"));
+            return;
+        }
+
+        // Check if we have ambiguous recipes
+        // ToDo: maybe we can optimize a little?
+        // Like checking for same craft area etc
+        if (recipes.Count > 1)
+        {
+            GameManager.ShowTooltip(
+                XUiM_Player.GetPlayer() as EntityPlayerLocal,
+                Localization.Get("ttManyRecipesForItem"));
+        }
+
+        // For now just pin the first recipe we found
+        PinRecipesManager.Instance.PinRecipe(recipes[0], amount);
     }
 
     public override void Update(float _dt)

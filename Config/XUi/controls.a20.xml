@@ -99,6 +99,7 @@
 
 		<pinned_recipe_ingredient_row index="9999">
 			<rect width="30" height="30" index="${index}" tooltip="tooltip"
+			      name="Ingredient" style="doubleclick" on_doubleclick="true"
 			      controller="XUiC_PinnedRecipeIngredient, PinRecipes">
 				<sprite depth="4" name="icon" width="30" height="30" pos="0,1" atlas="ItemIconAtlas"
 				        sprite="{icon}" color="{iconTint}" foregroundlayer="true" globalopacitymod="0.95" />
