@@ -138,7 +138,7 @@ public class PinRecipes : IModApi
     [HarmonyPatch("OnOpen")]
     public class XUiC_WorkstationWindowGroup_OnOpen
     {
-        static void Postfix(XUiC_CraftingWindowGroup __instance)
+        static void Postfix(XUiC_WorkstationWindowGroup __instance)
         {
             PinRecipesManager.Instance.SetCraftArea(__instance);
         }
@@ -200,6 +200,19 @@ public class PinRecipes : IModApi
             PooledBinaryReader _br)
         {
             PinRecipesManager.Instance.ReadPlayerData(_br, __instance.id);
+        }
+    }
+
+    // Patch world unload to cleanup on exit
+    // This ensures that recipes are not carried
+    // over when you create a new world from scratch
+    [HarmonyPatch(typeof(World))]
+    [HarmonyPatch("UnloadWorld")]
+    public class World_UnloadWorld
+    {
+        static void Postfix()
+        {
+            PinRecipesManager.Clear();
         }
     }
 

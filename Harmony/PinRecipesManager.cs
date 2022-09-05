@@ -50,6 +50,17 @@ public class PinRecipesManager
         instance = this;
     }
 
+    // Unload and reset singleton
+    public static void Clear()
+    {
+        if (instance == null) return;
+        instance.Recipes.Clear();
+        instance.Slots.Clear();
+        instance.Windows.Clear();
+        instance.DetachPlayerAndInventory();
+        instance.CraftArea = null;
+    }
+
     public void AttachPlayerAndInventory(XUi xui)
     {
         XUI = xui; Player = xui?.playerUI?.entityPlayer;
