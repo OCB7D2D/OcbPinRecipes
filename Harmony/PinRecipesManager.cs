@@ -85,9 +85,9 @@ public class PinRecipesManager
         SetWidgetsDirty();
     }
 
-    public void SetCraftArea(XUiC_CraftingWindowGroup area)
+    public void SetCraftArea(XUiC_CraftingWindowGroup area, bool force = false)
     {
-        if (CraftArea == area) return;
+        if (CraftArea == area && !force) return;
         foreach (var recipe in Recipes)
             recipe.UpdateCraftArea(area);
         CraftArea = area;
@@ -106,7 +106,7 @@ public class PinRecipesManager
         SetWidgetsDirty();
     }
 
-    public static XUiC_CraftingWindowGroup GetOpenCraftingWindow(XUi xui)
+    public static XUiC_CraftingWindowGroup GetOpenCraftingWindow()
     {
         if (instance == null) return null;
         return instance.CraftArea;

@@ -155,6 +155,19 @@ public class PinRecipes : IModApi
         }
     }
 
+    // Update state when tools are changed in workstation
+    [HarmonyPatch(typeof(XUiC_WorkstationToolGrid))]
+    [HarmonyPatch("UpdateBackend")]
+    public class XUiC_WorkstationToolGrid_UpdateBackend
+    {
+        static void Postfix(XUiC_WorkstationToolGrid __instance)
+        {
+            
+            if (__instance?.WindowGroup?.Controller is XUiC_WorkstationWindowGroup window)
+                PinRecipesManager.Instance.SetCraftArea(window, true);
+        }
+    }
+
     // Hook into UI startup when user is attached
     [HarmonyPatch(typeof(LocalPlayerUI))]
     [HarmonyPatch("DispatchNewPlayerForUI")]
