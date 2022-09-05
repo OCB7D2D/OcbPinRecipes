@@ -51,6 +51,7 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ### Version 0.6.1
 
+- Fix storing recipe variants for same item name
 - Correctly cleanup when world is unloaded
 - Only show buttons if there are pinned recipes
 

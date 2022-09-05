@@ -16,7 +16,7 @@ public class PinRecipesManager
 
     public List<XUiC_PinRecipes> Windows = new List<XUiC_PinRecipes>();
 
-    public static byte FileVersion = 1;
+    public static byte FileVersion = 2;
 
     public XUiC_CraftingWindowGroup CraftArea = null;
 
@@ -217,10 +217,20 @@ public class PinRecipesManager
         for (int index = 0; index < count; ++index)
         {
             int amount = br.ReadInt32();
-            string name = br.ReadString();
-            if (isSameUser == false) continue;
-            if (CraftingManager.GetRecipe(name) is Recipe recipe)
-                Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea));
+            if (CurrentFileVersion == 1)
+            {
+                string name = br.ReadString();
+                if (isSameUser == false) continue;
+                if (CraftingManager.GetRecipe(name) is Recipe recipe)
+                    Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea));
+            }
+            else
+            {
+                int hash = br.ReadInt32();
+                if (isSameUser == false) continue;
+                if (CraftingManager.GetRecipe(hash) is Recipe recipe)
+                    Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea));
+            }
         }
         // Make sure to update all slots
         for (int i = 0; i < Slots.Count; i++)
@@ -235,7 +245,7 @@ public class PinRecipesManager
         foreach (PinnedRecipeSDO recipe in Recipes)
         {
             bw.Write(recipe.Count);
-            bw.Write(recipe.Recipe.GetName());
+            bw.Write(recipe.Recipe.GetHashCode());
         }
     }
 
