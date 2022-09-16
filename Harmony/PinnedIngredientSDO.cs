@@ -55,7 +55,7 @@ public class PinnedIngredientSDO
         }
         else
         {
-            Need = 1;
+            Need = Ingredient.count;
         }
     }
 

@@ -146,6 +146,7 @@ public class XUiC_PinnedRecipe : XUiController
     }
 
     static readonly FieldInfo FieldFuelWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "fuelWindow");
+    static readonly FieldInfo FieldHasQueueChanged = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "hasQueueChanged");
 
     // Most complex functionality I had to copy in order to support
     // Let's hope I got all the math correct to not allow any cheating ;)
@@ -210,6 +211,11 @@ public class XUiC_PinnedRecipe : XUiController
                 _recipe.AddIngredient(
                     itemValue, ingredient.Need);
             }
+            // Weird case, but needed for dedicated server support
+            // Seems TFP has "abused" this property a little in
+            // order to return the correct stuff back on cancel!?
+            // Only required for dynamic `CraftingIngredientCount`
+            _recipe.scrapable |= ingredient.Need != ingredient.Ingredient.count;
         }
         // Check if we have the required materials in the inventory
         if (!xui.PlayerInventory.HasItems(_recipe.ingredients, Amount)) return;
@@ -225,6 +231,7 @@ public class XUiC_PinnedRecipe : XUiController
                         grid.TurnOn();
                     }
                 }
+                FieldHasQueueChanged.SetValue(workstation, true);
             }
             // Consume the items once we scheduled the crafting
             xui.PlayerInventory.RemoveItems(_recipe.ingredients, Amount);

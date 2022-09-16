@@ -49,6 +49,10 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ## Changelog
 
+### Version 0.6.2
+
+- Fix queuing of items with dynamic ingredient counts
+
 ### Version 0.6.1
 
 - Allow double click on Ingredients to pin its recipe
