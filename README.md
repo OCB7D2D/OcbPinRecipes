@@ -52,6 +52,8 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 ### Version 0.6.2
 
 - Fix queuing of items with dynamic ingredient counts
+- Add dynamic patching for "grab ingredients" button position  
+  Updated ModXmlPatcher to version 4 for new XPath conditions
 
 ### Version 0.6.1
 

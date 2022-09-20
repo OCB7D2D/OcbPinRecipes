@@ -1,4 +1,4 @@
-<configs>
+<configs patcher-version="4">
 
 	<!-- Pinnable Recipes -->
 	<append xpath="/windows">
@@ -46,5 +46,18 @@
 				sound="[paging_click]" />
 
 	</append>
+
+	<modif condition="xpath:/windows/window[@name='windowLooting' or @name='windowVehicleStorage']//rect[@controller='ContainerStandardControls'][count(button)=4]">
+		<setattribute xpath="/windows/window[@name='windowLooting' or @name='windowVehicleStorage']//rect[@controller='ContainerStandardControls']/button[@name='btnPinGrab']" name="pos">154, -22</setattribute>
+	</modif>
+	<modelsif condition="xpath:/windows/window[@name='windowLooting' or @name='windowVehicleStorage']//rect[@controller='ContainerStandardControls'][count(button)=5]">
+		<setattribute xpath="/windows/window[@name='windowLooting' or @name='windowVehicleStorage']//rect[@controller='ContainerStandardControls']/button[@name='btnPinGrab']" name="pos">114, -22</setattribute>
+	</modelsif>
+	<modelsif condition="xpath:/windows/window[@name='windowLooting' or @name='windowVehicleStorage']//rect[@controller='ContainerStandardControls'][count(button)=6]">
+		<setattribute xpath="/windows/window[@name='windowLooting' or @name='windowVehicleStorage']//rect[@controller='ContainerStandardControls']/button[@name='btnPinGrab']" name="pos">74, -22</setattribute>
+	</modelsif>
+	<modelse>
+		<echo error="No valid XML found to patch Grab Ingredients Button to Container Standard Controls"/>
+	</modelse>
 
 </configs>

@@ -400,7 +400,6 @@ public class PinRecipesManager
     public void GrabIngredients()
     {
         if (XUI == null) return;
-        Log.Out("Grab the ingredients now");
         if (XUI.lootContainer != null) GrabIngredients(XUI.lootContainer);
         else if (XUI.vehicle?.bag != null) GrabIngredients(XUI.vehicle.bag);
     }
