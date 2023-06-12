@@ -49,6 +49,13 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ## Changelog
 
+### Version 0.8.0
+
+- Update compatibility for 7D2D A21.0(b313)
+- Add shift modifier for scroll wheel action
+- Add alt modifier to scroll alternate recipes
+- Add journal tip to highlight some hidden features
+
 ### Version 0.6.2
 
 - Fix queuing of items with dynamic ingredient counts

@@ -1,4 +1,5 @@
-<configs patcher-version="1">
+<configs patcher-version="4">
 
 	<include path="controls.a20.xml"/>
+
 </configs>

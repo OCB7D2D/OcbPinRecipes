@@ -12,10 +12,10 @@ public class PinnedRecipeSDO
 {
 
     public int Count = 1; // adjustable
-    public readonly Recipe Recipe = null;
-    public readonly string Title = null;
-    public readonly string IconImg = null;
-    public readonly string IconTint = null;
+    public Recipe Recipe = null;
+    public string Title = null;
+    public string IconImg = null;
+    public string IconTint = null;
     public bool CorrectArea = false;
     public bool IsCraftable = false;
     public bool IsLocked = false;
@@ -109,29 +109,9 @@ public class PinnedRecipeSDO
         XUiC_CraftingWindowGroup area)
     {
         Count = count;
-        Recipe = recipe;
-        Ingredients.Clear();
-        if (Recipe != null)
-        {
-            Title = Localization.Get(Recipe.GetName());
-            ItemValue itemValue = new ItemValue(Recipe.itemValueType);
-            IconImg = itemValue.GetPropertyOverride("CustomIcon",
-                itemValue.ItemClass.GetIconName());
-            IconTint = colorFormatter.Format(itemValue
-                .ItemClass.GetIconTint(itemValue));
-            // Also cache a few things from ingredients
-            for (int i = 0; i < Recipe.ingredients.Count; i++)
-                Ingredients.Add(new PinnedIngredientSDO(this, i));
-        }
-        // Some safety checks
-        Count = Math.Max(Count, 1);
-        Count = Math.Min(Count, 9999);
+        UpdateRecipe(recipe);
         // Update `CorrectArea`
         UpdateCraftArea(area);
-        // Update user dependent state
-        OnUserStatsChanged();
-        // Update Inventory state
-        OnInventoryChanged();
     }
 
     private bool IsCorrectCraftingArea(XUiC_CraftingWindowGroup win)
@@ -202,4 +182,31 @@ public class PinnedRecipeSDO
         return true;
     }
 
+    public void UpdateRecipe(Recipe recipe)
+    {
+        if (Recipe == recipe) return;
+        Recipe = recipe;
+        Ingredients.Clear();
+        if (Recipe != null)
+        {
+            Title = Localization.Get(Recipe.GetName());
+            ItemValue itemValue = new ItemValue(Recipe.itemValueType);
+            IconImg = itemValue.GetPropertyOverride("CustomIcon",
+                itemValue.ItemClass.GetIconName());
+            IconTint = colorFormatter.Format(itemValue
+                .ItemClass.GetIconTint(itemValue));
+            // Also cache a few things from ingredients
+            for (int i = 0; i < Recipe.ingredients.Count; i++)
+                Ingredients.Add(new PinnedIngredientSDO(this, i));
+        }
+        // Some safety checks
+        Count = Math.Max(Count, 1);
+        Count = Math.Min(Count, 9999);
+        // Update craft area to check if it can be built       
+        UpdateCraftArea(PinRecipesManager.OptInstance?.CraftArea);
+        // Update user dependent state
+        OnUserStatsChanged();
+        // Update Inventory state
+        OnInventoryChanged();
+    }
 }

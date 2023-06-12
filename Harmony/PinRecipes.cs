@@ -7,7 +7,7 @@ public class PinRecipes : IModApi
 
     public void InitMod(Mod mod)
     {
-        Log.Out(" Loading Patch: " + GetType().ToString());
+        Log.Out("OCB Harmony Patch: " + GetType().ToString());
         Harmony harmony = new Harmony(GetType().ToString());
         harmony.PatchAll(Assembly.GetExecutingAssembly());
     }
@@ -18,12 +18,14 @@ public class PinRecipes : IModApi
     public class XUiC_ItemActionList_SetCraftingActionList
     {
         static void Postfix(XUiC_ItemActionList __instance,
+            List<BaseItemActionEntry> ___itemActionEntries,
             XUiC_RecipeCraftCount ___craftCountControl,
             XUiController itemController)
         {
             if (itemController is XUiC_RecipeEntry xuiCRecipeEntry)
             {
                 if (xuiCRecipeEntry.Recipe == null || xuiCRecipeEntry.Recipe.materialBasedRecipe) return;
+                ___itemActionEntries.RemoveAll(x => x.ActionName == "Track");
                 __instance.AddActionListEntry(new ItemActionEntryPinRecipes(itemController,
                     xuiCRecipeEntry.Recipe, ___craftCountControl));
             }
@@ -306,7 +308,7 @@ public class PinRecipes : IModApi
             // Find position of mods we depend on
             for (int i = 0; i < __result.Count; i += 1)
             {
-                switch (__result[i].ModInfo.Name.Value)
+                switch (__result[i].Name)
                 {
                     case "SMXui":
                         depPos = i + 1;

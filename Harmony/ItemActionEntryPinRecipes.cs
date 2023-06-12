@@ -17,6 +17,8 @@
     {
         PinRecipesManager.Instance.PinRecipe(
             Recipe, Counter.Count);
+        ItemController.xui.playerUI.entityPlayer.PlayerJournal
+            .AddJournalEntry("ocbPinRecipesTip");
     }
 
 }

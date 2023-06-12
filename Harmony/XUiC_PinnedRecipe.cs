@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
 
 public class XUiC_PinnedRecipe : XUiController
 {
@@ -137,11 +138,40 @@ public class XUiC_PinnedRecipe : XUiController
         SetAllChildrenDirty();
     }
 
+    private void HandleAltScroll(float delta)
+    {
+        if (RDO == null) return;
+        string name = RDO.Recipe.GetName();
+        List<Recipe> recipes = CraftingManager.GetRecipes(name);
+        var mgr = PinRecipesManager.OptInstance;
+        if (recipes == null || mgr == null) return;
+        var idx = recipes.IndexOf(RDO.Recipe);
+        if (idx == -1) return;
+        idx += (int)(delta * 10f);
+        if (idx < 0) idx = recipes.Count - 1;
+        if (idx >= recipes.Count) idx = 0;
+        RDO.UpdateRecipe(recipes[idx]);
+        SetRecipe(RDO); // Update Myself
+    }
+
+    static bool IsAltPressed => Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
+    static bool IsShiftPressed => Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+
     private void HandleScroll(XUiController sender, float delta)
     {
         if (RDO == null) return;
+        float factor = 10f;
+        var mgr = PinRecipesManager.OptInstance;
+        // Handle alternative recipe scroll
+        if (mgr != null && IsAltPressed)
+        {
+            HandleAltScroll(delta);
+            return;
+        }
+        // Handle increased amount (shift) scroll
+        if (mgr != null && IsShiftPressed) factor = 100f;
         RDO.SetCount(RDO.Count +
-            (int)(delta * 10f));
+            (int)(delta * factor));
         SetAllChildrenDirty();
     }
 
