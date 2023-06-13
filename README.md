@@ -1,4 +1,4 @@
-# OCB Pin Recipes Mod - 7 Days to Die (A20) Addon
+# OCB Advanced Pin Recipes Mod - 7 Days to Die (A21) Addon
 
 A small harmony mod enabling to pin recipes on the UI.
 
@@ -48,6 +48,11 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 - https://github.com/OCB7D2D/OcbPinRecipes/archive/master.zip (master branch)
 
 ## Changelog
+
+### Version 0.8.1
+
+- Fix sync issue when skill magazines are read
+- Use craft tier as given when recipe was pinned
 
 ### Version 0.8.0
 

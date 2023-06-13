@@ -51,7 +51,7 @@ public class PinnedIngredientSDO
                  _entity: player, _recipe: RDO.Recipe,
                  tags: FastTags.Parse(Ingredient.
                     itemValue.ItemClass.GetItemName()),
-                craftingTier: (int)RDO.Tier);
+                craftingTier: RDO.Recipe.craftingTier);
         }
         else
         {

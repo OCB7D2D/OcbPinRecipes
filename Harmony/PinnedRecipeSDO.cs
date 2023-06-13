@@ -20,10 +20,6 @@ public class PinnedRecipeSDO
     public bool IsCraftable = false;
     public bool IsLocked = false;
 
-    // Tier may change if player stats change
-    // E.g. when upgrading stats after leveling
-    public float Tier = -1;
-
     // Same goes for needed ingredients
     public readonly List<PinnedIngredientSDO>
         Ingredients = new List<PinnedIngredientSDO>();
@@ -77,13 +73,6 @@ public class PinnedRecipeSDO
         var player = PinRecipesManager.Instance.Player;
         // Bail out early if no user is attached yet
         if (player == null) return;
-        // Tier seems only dependent on recipe
-        Tier = EffectManager.GetValue(
-            PassiveEffects.CraftingTier,
-            _originalValue: 1f,
-            _entity: player,
-            _recipe: Recipe,
-            tags: Recipe.tags);
         // Also cache a few things from ingredients
         for (int i = 0; i < Ingredients.Count; i++)
             Ingredients[i].RecalcNeeded(player);

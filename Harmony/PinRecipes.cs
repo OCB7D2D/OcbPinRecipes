@@ -192,6 +192,17 @@ public class PinRecipes : IModApi
         }
     }
 
+    // Hook into function when skill magazines are read
+    [HarmonyPatch(typeof(MinEventActionAddProgressionLevel))]
+    [HarmonyPatch("Execute")]
+    public class MinEventActionAddProgressionLevel_Execute
+    {
+        static void Postfix()
+        {
+            PinRecipesManager.Instance.OnSkillsChanged();
+        }
+    }
+
     // Patch player data write to append our data
     [HarmonyPatch(typeof(PlayerDataFile))]
     [HarmonyPatch("Write")]
