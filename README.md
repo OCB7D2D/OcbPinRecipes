@@ -49,6 +49,10 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ## Changelog
 
+### Version 0.8.2
+
+- Fix to remember crafting tier for pinned recipes
+
 ### Version 0.8.1
 
 - Fix sync issue when skill magazines are read

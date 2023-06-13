@@ -12,6 +12,7 @@ public class PinnedRecipeSDO
 {
 
     public int Count = 1; // adjustable
+    public int CraftingTier = -1;
     public Recipe Recipe = null;
     public string Title = null;
     public string IconImg = null;
@@ -178,6 +179,7 @@ public class PinnedRecipeSDO
         Ingredients.Clear();
         if (Recipe != null)
         {
+            CraftingTier = Recipe.craftingTier;
             Title = Localization.Get(Recipe.GetName());
             ItemValue itemValue = new ItemValue(Recipe.itemValueType);
             IconImg = itemValue.GetPropertyOverride("CustomIcon",

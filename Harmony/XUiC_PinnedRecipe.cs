@@ -206,7 +206,7 @@ public class XUiC_PinnedRecipe : XUiController
             craftExpGain = Recipe.craftExpGain,
             craftingTime = XUiM_Recipes.GetRecipeCraftTime(xui, Recipe),
             craftingToolType = Recipe.craftingToolType,
-            craftingTier = Recipe.craftingTier,
+            craftingTier = RDO.CraftingTier,
             tags = Recipe.tags
         };
 
