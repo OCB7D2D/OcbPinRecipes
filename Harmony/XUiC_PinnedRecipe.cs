@@ -143,6 +143,7 @@ public class XUiC_PinnedRecipe : XUiController
         if (RDO == null) return;
         string name = RDO.Recipe.GetName();
         List<Recipe> recipes = CraftingManager.GetRecipes(name);
+        recipes.RemoveAll(x => x.ingredients.Count == 0);
         var mgr = PinRecipesManager.OptInstance;
         if (recipes == null || mgr == null) return;
         var idx = recipes.IndexOf(RDO.Recipe);

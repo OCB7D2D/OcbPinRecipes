@@ -49,6 +49,10 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ## Changelog
 
+### Version 0.8.5
+
+- Remove alternate base recipes without ingredients
+
 ### Version 0.8.4
 
 - Add controller support for grab ingredients feature
