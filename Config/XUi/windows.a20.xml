@@ -5,7 +5,9 @@
 
 		<!-- Left or Right side of screen -->
 		<!-- anchor = "LeftCenter" or "RightCenter" -->
-		<window name="windowPinRecipes" anchor="RightCenter" visible="true" grab_key_binding="G">
+		<window name="windowPinRecipes" anchor="RightCenter" visible="true"
+				grab_ctrl_binding="DPad_Down" grab_ctrl_icon="DPadDown"
+				grab_key_binding="G">
 
 			<!-- Button to grab ingredients for all pinned recipes  -->
 			<button pos="-35,300" width="20" height="20"

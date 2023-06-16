@@ -1,3 +1,6 @@
+using GameEvent.SequenceActions;
+using GUI_2;
+using InControl;
 using UnityEngine;
 using XMLData.Parsers;
 
@@ -8,6 +11,13 @@ public class XUiC_PinRecipes : XUiController
 
     public KeyCode KeyBinding = KeyCode.None;
 
+    public string CtrlBinding = null;
+
+    public static PlayerAction CtrlAction = null;
+
+    public static UIUtils.ButtonIcon CtrlBtn =
+        UIUtils.ButtonIcon.DPadDown;
+
     public override void Init()
     {
         base.Init();
@@ -17,6 +27,9 @@ public class XUiC_PinRecipes : XUiController
         var attributes = xui?.GetWindow("windowPinRecipes")?.Controller?.CustomAttributes;
         if (attributes.TryGetValue("grab_key_binding", out string value))
             KeyBinding = EnumParser.Parse<KeyCode>(value);
+        if (attributes.TryGetValue("grab_ctrl_icon", out string icon))
+            CtrlBtn = EnumParser.Parse<UIUtils.ButtonIcon>(icon);
+        attributes.TryGetValue("grab_ctrl_binding", out CtrlBinding);
         ID = WindowGroup.ID;
         IsDirty = true;
     }
@@ -25,6 +38,37 @@ public class XUiC_PinRecipes : XUiController
     {
         base.Cleanup();
         if (GetChildById("btnGrab") is XUiController grab) grab.OnPress -= OnGrab;
+    }
+
+    public PlayerAction GetDpadAction(string name)
+    {
+        switch (name)
+        {
+            case "Left": return xui.playerUI.playerInput.GUIActions.Left;
+            case "Right": return xui.playerUI.playerInput.GUIActions.Right;
+            case "Up": return xui.playerUI.playerInput.GUIActions.Up;
+            case "Down": return xui.playerUI.playerInput.GUIActions.Down;
+            case "DPad_Left": return xui.playerUI.playerInput.GUIActions.DPad_Left;
+            case "DPad_Right": return xui.playerUI.playerInput.GUIActions.DPad_Right;
+            case "DPad_Up": return xui.playerUI.playerInput.GUIActions.DPad_Up;
+            case "DPad_Down": return xui.playerUI.playerInput.GUIActions.DPad_Down;
+            case "CameraLeft": return xui.playerUI.playerInput.GUIActions.CameraLeft;
+            case "CameraRight": return xui.playerUI.playerInput.GUIActions.CameraRight;
+            case "CameraUp": return xui.playerUI.playerInput.GUIActions.CameraUp;
+            case "CameraDown": return xui.playerUI.playerInput.GUIActions.CameraDown;
+            case "Submit": return xui.playerUI.playerInput.GUIActions.Submit;
+            case "Cancel": return xui.playerUI.playerInput.GUIActions.Cancel;
+            case "HalfStack": return xui.playerUI.playerInput.GUIActions.HalfStack;
+            case "Inspect": return xui.playerUI.playerInput.GUIActions.Inspect;
+            case "WindowPagingLeft": return xui.playerUI.playerInput.GUIActions.WindowPagingLeft;
+            case "WindowPagingRight": return xui.playerUI.playerInput.GUIActions.WindowPagingRight;
+            case "PageUp": return xui.playerUI.playerInput.GUIActions.PageUp;
+            case "PageDown": return xui.playerUI.playerInput.GUIActions.PageDown;
+            case "RightStick": return xui.playerUI.playerInput.GUIActions.RightStick;
+            case "LeftStick": return xui.playerUI.playerInput.GUIActions.LeftStick;
+            case "None": return null;
+            default: throw new System.Exception("Unknown Control Name");
+        }
     }
 
     private void OnGrab(XUiController sender, int mouseButton)
@@ -38,6 +82,8 @@ public class XUiC_PinRecipes : XUiController
         IsDirty = true;
         PinRecipesManager.Instance
             .RegisterWindow(this);
+        if (CtrlBinding != null) CtrlAction
+            = GetDpadAction(CtrlBinding);
     }
 
     public override void OnClose()
@@ -45,6 +91,7 @@ public class XUiC_PinRecipes : XUiController
         base.OnClose();
         PinRecipesManager.Instance
             .UnregisterWindow(this);
+        CtrlAction = null;
     }
 
     public override void Update(float _dt)
@@ -52,8 +99,12 @@ public class XUiC_PinRecipes : XUiController
         base.Update(_dt);
         if (!XUi.IsGameRunning()) return;
         if (PinRecipesManager.HasInstance && PinRecipesManager.IsMenuOpen())
+        {
             if (KeyBinding != KeyCode.None && Input.GetKeyDown(KeyBinding))
                 PinRecipesManager.Instance.GrabIngredients();
+            else if (CtrlAction != null && CtrlAction.WasPressed)
+                PinRecipesManager.Instance.GrabIngredients();
+        }
         if (IsDirty == false) return;
         RefreshBindings();
         IsDirty = false;

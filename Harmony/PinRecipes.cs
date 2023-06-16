@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using GUI_2;
+using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -31,6 +32,19 @@ public class PinRecipes : IModApi
                     xuiCRecipeEntry.Recipe, ___craftCountControl);
                 __instance.AddActionListEntry(action);
             }
+        }
+    }
+
+    // Register event handlers when game starts
+    [HarmonyPatch(typeof(XUiC_LootWindow))]
+    [HarmonyPatch("OpenContainer")]
+    public class XUiC_LootContainer_OpenContainer
+    {
+        static void Postfix(XUiC_LootWindow __instance)
+        {
+            if (XUiC_PinRecipes.CtrlAction == null) return;
+            __instance.xui.calloutWindow.AddCallout(XUiC_PinRecipes.CtrlBtn,
+                "igcoPinGrab", XUiC_GamepadCalloutWindow.CalloutType.MenuLoot);
         }
     }
 
