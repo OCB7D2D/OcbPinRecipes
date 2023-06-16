@@ -49,6 +49,10 @@ Simply [download here from GitHub][2] and put into your A20 Mods folder:
 
 ## Changelog
 
+### Version 0.8.3
+
+- Fix issue with pin action not showing in some languages
+
 ### Version 0.8.2
 
 - Fix to remember crafting tier for pinned recipes

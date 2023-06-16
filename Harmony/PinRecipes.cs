@@ -25,9 +25,11 @@ public class PinRecipes : IModApi
             if (itemController is XUiC_RecipeEntry xuiCRecipeEntry)
             {
                 if (xuiCRecipeEntry.Recipe == null || xuiCRecipeEntry.Recipe.materialBasedRecipe) return;
-                ___itemActionEntries.RemoveAll(x => x.ActionName == "Track");
-                __instance.AddActionListEntry(new ItemActionEntryPinRecipes(itemController,
-                    xuiCRecipeEntry.Recipe, ___craftCountControl));
+                // Action name is localized, therefore we can't use it to match here
+                ___itemActionEntries.RemoveAll(x => x.IconName == "ui_game_symbol_compass");
+                var action = new ItemActionEntryPinRecipes(itemController,
+                    xuiCRecipeEntry.Recipe, ___craftCountControl);
+                __instance.AddActionListEntry(action);
             }
         }
     }
