@@ -43,9 +43,8 @@ helpful if your UI overwrites the item stack controller.
 
 ## Download and Install
 
-Simply [download here from GitHub][2] and put into your A20 Mods folder:
-
-- https://github.com/OCB7D2D/OcbPinRecipes/archive/master.zip (master branch)
+[Download from GitHub releases][2] and extract into your A21 Mods folder!  
+Ensure you don't have double nested folders and ModInfo.xml is at right place!
 
 ## Changelog
 
