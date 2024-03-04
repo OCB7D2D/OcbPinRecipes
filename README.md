@@ -48,6 +48,10 @@ Ensure you don't have double nested folders and ModInfo.xml is at right place!
 
 ## Changelog
 
+### Version 0.8.6
+
+- Fix compatibility with Electricity Overhaul
+
 ### Version 0.8.5
 
 - Remove alternate base recipes without ingredients
