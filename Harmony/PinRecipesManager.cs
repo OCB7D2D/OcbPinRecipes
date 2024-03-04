@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class PinRecipesManager
 {
@@ -188,7 +187,7 @@ public class PinRecipesManager
         SetWidgetsDirty();
         return true;
     }
- 
+
     // There is a weird edge case, as you can run the game twice from
     // the same steam account. When you connect one to the other, you
     // will end up with the same "EOS ID", thus only one user profile.

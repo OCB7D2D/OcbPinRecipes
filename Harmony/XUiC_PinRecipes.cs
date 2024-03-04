@@ -1,4 +1,3 @@
-using GameEvent.SequenceActions;
 using GUI_2;
 using InControl;
 using UnityEngine;
@@ -81,6 +80,8 @@ public class XUiC_PinRecipes : XUiController
         base.OnOpen();
         IsDirty = true;
         PinRecipesManager.Instance
+            .AttachPlayerAndInventory(xui);
+        PinRecipesManager.Instance
             .RegisterWindow(this);
         if (CtrlBinding != null) CtrlAction
             = GetDpadAction(CtrlBinding);
@@ -89,6 +90,8 @@ public class XUiC_PinRecipes : XUiController
     public override void OnClose()
     {
         base.OnClose();
+        PinRecipesManager.Instance
+            .DetachPlayerAndInventory();
         PinRecipesManager.Instance
             .UnregisterWindow(this);
         CtrlAction = null;

@@ -1,5 +1,4 @@
-﻿using GUI_2;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -45,31 +44,6 @@ public class PinRecipes : IModApi
             if (XUiC_PinRecipes.CtrlAction == null) return;
             __instance.xui.calloutWindow.AddCallout(XUiC_PinRecipes.CtrlBtn,
                 "igcoPinGrab", XUiC_GamepadCalloutWindow.CalloutType.MenuLoot);
-        }
-    }
-
-    // Register event handlers when game starts
-    [HarmonyPatch(typeof(GameStateManager))]
-    [HarmonyPatch("StartGame")]
-    public class GameStateManager_StartGame
-    {
-        static void Postfix()
-        {
-            XUi xui = LocalPlayerUI.GetUIForPrimaryPlayer()?.xui;
-            // Force instance; player wouldn't be known otherwise
-            PinRecipesManager.Instance.AttachPlayerAndInventory(xui);
-        }
-    }
-
-    // Unregister event handlers when game ends
-    [HarmonyPatch(typeof(GameStateManager))]
-    [HarmonyPatch("EndGame")]
-    public class GameStateManager_EndGame
-    {
-        static void Postfix()
-        {
-            if (!PinRecipesManager.HasInstance) return;
-            PinRecipesManager.Instance.DetachPlayerAndInventory();
         }
     }
 
@@ -180,7 +154,6 @@ public class PinRecipes : IModApi
     {
         static void Postfix(XUiC_WorkstationToolGrid __instance)
         {
-            
             if (__instance?.WindowGroup?.Controller is XUiC_WorkstationWindowGroup window)
                 PinRecipesManager.Instance.SetCraftArea(window, true);
         }
