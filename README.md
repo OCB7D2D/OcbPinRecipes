@@ -1,4 +1,4 @@
-# OCB Advanced Pin Recipes Mod - 7 Days to Die (A21) Addon
+# OCB Advanced Pin Recipes Mod - 7 Days to Die (V1.0 exp) Addon
 
 A small harmony mod enabling to pin recipes on the UI.
 
@@ -43,10 +43,14 @@ helpful if your UI overwrites the item stack controller.
 
 ## Download and Install
 
-[Download from GitHub releases][2] and extract into your A21 Mods folder!  
+[Download from GitHub releases][2] and extract into your Mods folder!  
 Ensure you don't have double nested folders and ModInfo.xml is at right place!
 
 ## Changelog
+
+### Version 0.9.0
+
+- First compatibility with V1.0 (exp)
 
 ### Version 0.8.6
 
@@ -183,10 +187,6 @@ Ensure you don't have double nested folders and ModInfo.xml is at right place!
 ### Version 0.1.0
 
 - Initial version
-
-## Compatibility
-
-I've developed and tested this Mod against version a20.b218.
 
 [1]: https://github.com/OCB7D2D/OcbPinRecipesUiTdrHart
 [2]: https://github.com/OCB7D2D/OcbPinRecipes/releases

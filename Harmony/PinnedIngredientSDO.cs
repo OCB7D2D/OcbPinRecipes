@@ -49,7 +49,7 @@ public class PinnedIngredientSDO
                  PassiveEffects.CraftingIngredientCount,
                  _originalValue: Ingredient.count,
                  _entity: player, _recipe: RDO.Recipe,
-                 tags: FastTags.Parse(Ingredient.
+                 tags: FastTags<TagGroup.Global>.Parse(Ingredient.
                     itemValue.ItemClass.GetItemName()),
                 craftingTier: RDO.Recipe.craftingTier);
         }

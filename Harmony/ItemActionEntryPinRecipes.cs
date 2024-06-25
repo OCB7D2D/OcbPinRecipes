@@ -17,8 +17,9 @@
     {
         PinRecipesManager.Instance.PinRecipe(
             Recipe, Counter.Count);
-        ItemController.xui.playerUI.entityPlayer.PlayerJournal
-            .AddJournalEntry("ocbPinRecipesTip");
+        // No more journal entries in V1.0 - alternative?
+        //ItemController.xui.playerUI.entityPlayer.PlayerJournal
+        //    .AddJournalEntry("ocbPinRecipesTip");
     }
 
 }

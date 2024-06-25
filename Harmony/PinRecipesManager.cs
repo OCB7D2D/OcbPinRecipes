@@ -364,20 +364,20 @@ public class PinRecipesManager
         return changed;
     }
 
-    private void GrabIngredients(TileEntityLootContainer container)
+    private void GrabIngredients(ITileEntityLootable container)
     {
         if (XUI == null) return;
         if (container == null) return;
         var inventory = XUI.PlayerInventory;
         if (inventory == null) return;
         // Fetch ingredients for all pinned recipes
-        ItemStack[] slots = container.GetItems();
+        ItemStack[] slots = container.items;
         if (GrabRequiredItems(inventory, ref slots, Recipes))
         {
             // Re-implement `TileEntityChanged`, since it is private
             // E.g. see how `TileEntityLootContainer.UpdateSlot` works
             for (int index = 0; index < container.listeners.Count; ++index)
-                container.listeners[index].OnTileEntityChanged(container, 0);
+                container.listeners[index].OnTileEntityChanged(container);
             // See `SetEmpty()`
             container.bTouched = true;
             container.SetModified();
