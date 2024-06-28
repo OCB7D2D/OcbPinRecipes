@@ -102,6 +102,8 @@ public class PinRecipesManager
     {
         foreach (var recipe in Recipes)
             recipe.OnUserStatsChanged();
+        foreach (var slot in Slots)
+            slot.ReAssign();
         SetWidgetsDirty();
     }
 

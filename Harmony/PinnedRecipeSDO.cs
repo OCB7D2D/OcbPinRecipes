@@ -112,7 +112,8 @@ public class PinnedRecipeSDO
         XUiC_CraftingWindowGroup area, int tier = -1)
     {
         Count = count;
-        CraftingTier = tier;
+        recipe.craftingTier =
+            CraftingTier = tier;
         UpdateRecipe(recipe);
         // Update `CorrectArea`
         UpdateCraftArea(area);

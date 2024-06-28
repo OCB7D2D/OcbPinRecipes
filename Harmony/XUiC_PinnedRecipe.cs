@@ -23,8 +23,26 @@ public class XUiC_PinnedRecipe : XUiController
     public void SetRecipe(PinnedRecipeSDO dto)
     {
         RDO = dto;
-        for (int i = 0; i < uiIngredients.Length; i++)
-            uiIngredients[i].SetIngredient(RDO?.GetIngredient(i));
+        ReAssign();
+    }
+
+    public void ReAssign()
+    {
+        if (RDO == null) return;
+        // Reset existing ingredients on the UI
+        for (int n = 0; n < uiIngredients.Length; n++)
+        {
+            uiIngredients[n].SetIngredient(null);
+        }
+        // Add ingredients for the current recipe
+        for (int i = 0, n = 0; i < uiIngredients.Length; i++)
+        {
+            var ingredient = RDO.GetIngredient(i);
+            if (ingredient != null && ingredient.Need > 0)
+            {
+                uiIngredients[n++].SetIngredient(ingredient);
+            }
+        }
         IsDirty = true;
     }
 

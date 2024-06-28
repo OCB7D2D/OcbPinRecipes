@@ -74,7 +74,11 @@ public class XUiC_PinnedRecipeIngredient : XUiController
         base.Update(_dt);
         if (IsDirty == false) return;
         if (!XUi.IsGameRunning()) return;
-        ViewComponent.IsVisible = (Ingredient != null);
+        ViewComponent.IsVisible = (Ingredient != null
+            // Edge case where recipe is loaded first with wrong counts
+            // E.g. some ingredients may be set to count zero afterwards
+            // This at least hides them, and any other `SetRecipe` fixes it
+            && Ingredient.count != 0);
         ViewComponent.ToolTip = IDO?.Title;
         RefreshBindings(true);
         IsDirty = false;
