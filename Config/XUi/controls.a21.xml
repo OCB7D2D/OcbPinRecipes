@@ -32,6 +32,26 @@
 						color="240,240,240,248"
 					/>
 
+					<!-- Label showing the quality to craft (if it has any) -->
+					<label
+						depth="3"
+						name="quality"
+						text="{quality}"
+						visible="{hasQuality}"
+						pos="17,-11"
+						font_size="11"
+						width="26"
+						height="20"
+						foregroundlayer="true"
+						crispness="Always"
+						effect="Outline"
+						effect_color="20,20,20,230"
+						effect_distance="1,1"
+						justify="left"
+						pivot="TopLeft"
+						color="240,200,120,248"
+					/>
+
 					<!-- Label with the translated name of pinned recipe -->
 					<label
 						depth="6"

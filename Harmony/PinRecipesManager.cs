@@ -216,19 +216,20 @@ public class PinRecipesManager
         for (int index = 0; index < count; ++index)
         {
             int amount = br.ReadInt32();
+            int tier = br.ReadInt32();
             if (CurrentFileVersion == 1)
             {
                 string name = br.ReadString();
                 if (isSameUser == false) continue;
                 if (CraftingManager.GetRecipe(name) is Recipe recipe)
-                    Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea));
+                    Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea, tier));
             }
             else
             {
                 int hash = br.ReadInt32();
                 if (isSameUser == false) continue;
                 if (CraftingManager.GetRecipe(hash) is Recipe recipe)
-                    Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea));
+                    Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea, tier));
             }
         }
         // Make sure to update all slots
@@ -244,6 +245,7 @@ public class PinRecipesManager
         foreach (PinnedRecipeSDO recipe in Recipes)
         {
             bw.Write(recipe.Count);
+            bw.Write(recipe.CraftingTier);
             bw.Write(recipe.Recipe.GetHashCode());
         }
     }

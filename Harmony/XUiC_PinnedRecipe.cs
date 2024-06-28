@@ -93,6 +93,14 @@ public class XUiC_PinnedRecipe : XUiController
             case "amount":
                 value = Amount.ToString();
                 return true;
+            case "quality":
+                value = RDO == null ? "-1" :
+                    RDO.CraftingTier.ToString();
+                return true;
+            case "hasQuality":
+                value = RDO == null ? "False" :
+                    RDO.HasQuality().ToString();
+                return true;
             case "isVisible":
                 value = (Recipe != null).ToString();
                 return true;
@@ -138,6 +146,7 @@ public class XUiC_PinnedRecipe : XUiController
         SetAllChildrenDirty();
     }
 
+    // Scroll through different recipes for same item
     private void HandleAltScroll(float delta)
     {
         if (RDO == null) return;
@@ -151,7 +160,24 @@ public class XUiC_PinnedRecipe : XUiController
         idx += (int)(delta * 10f);
         if (idx < 0) idx = recipes.Count - 1;
         if (idx >= recipes.Count) idx = 0;
+        recipes[idx].craftingTier = RDO.CraftingTier;
         RDO.UpdateRecipe(recipes[idx]);
+        SetRecipe(RDO); // Update Myself
+    }
+
+    // Scroll through different qualities for recipe
+    private void HandleQualityScroll(float delta)
+    {
+        if (RDO == null) return;
+        // Hardcoded to 6 in vanilla
+        var maxq = RDO.MaxQuality();
+        if (maxq <= 0) return;
+        var tier = RDO.CraftingTier + (int)(delta * 10);
+        if (tier < 1) tier = maxq;
+        else if (tier > maxq) tier = 1;
+        RDO.Recipe.craftingTier =
+            RDO.CraftingTier = tier;
+        RDO.UpdateRecipe(RDO.Recipe, true);
         SetRecipe(RDO); // Update Myself
     }
 
@@ -161,18 +187,28 @@ public class XUiC_PinnedRecipe : XUiController
     private void HandleScroll(XUiController sender, float delta)
     {
         if (RDO == null) return;
-        float factor = 10f;
         var mgr = PinRecipesManager.OptInstance;
+        if (mgr == null) return;
         // Handle alternative recipe scroll
-        if (mgr != null && IsAltPressed)
+        if (IsAltPressed)
         {
-            HandleAltScroll(delta);
-            return;
+            if (IsShiftPressed)
+            {
+                // Handle quality alternation
+                HandleQualityScroll(delta);
+            }
+            else
+            {
+                // Handle recipe alternation
+                HandleAltScroll(delta);
+            }
         }
-        // Handle increased amount (shift) scroll
-        if (mgr != null && IsShiftPressed) factor = 100f;
-        RDO.SetCount(RDO.Count +
-            (int)(delta * factor));
+        else
+        {
+            // Handle increased amount (shift) scroll
+            float factor = IsShiftPressed ? 100f : 10f;
+            RDO.SetCount(RDO.Count + (int)(delta * factor));
+        }
         SetAllChildrenDirty();
     }
 

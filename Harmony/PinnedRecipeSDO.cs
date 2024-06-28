@@ -4,6 +4,7 @@
 // Only a few parameters are allowed to change
 
 using HarmonyLib;
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -33,6 +34,17 @@ public class PinnedRecipeSDO
     {
         if (index >= Ingredients.Count) return null;
         else return Ingredients[index];
+    }
+
+    public bool HasQuality()
+    {
+        return Recipe != null && ItemClass.
+            GetForId(Recipe.itemValueType).HasQuality;
+    }
+
+    public int MaxQuality()
+    {
+        return 6;
     }
 
     // Update the multiplier
@@ -78,7 +90,8 @@ public class PinnedRecipeSDO
         for (int i = 0; i < Ingredients.Count; i++)
             Ingredients[i].RecalcNeeded(player);
         // Check if recipe is locked for user
-        IsLocked = !Recipe.IsUnlocked(player);
+        IsLocked = !CanCraftQuality() ||
+            !Recipe.IsUnlocked(player);
         // Update if we can craft it
         UpdateIsCraftable();
     }
@@ -96,9 +109,10 @@ public class PinnedRecipeSDO
     }
 
     public PinnedRecipeSDO(Recipe recipe, int count,
-        XUiC_CraftingWindowGroup area)
+        XUiC_CraftingWindowGroup area, int tier = -1)
     {
         Count = count;
+        CraftingTier = tier;
         UpdateRecipe(recipe);
         // Update `CorrectArea`
         UpdateCraftArea(area);
@@ -164,6 +178,19 @@ public class PinnedRecipeSDO
         return true;
     }
 
+    private bool CanCraftQuality()
+    {
+        if (Recipe == null) return false;
+        var player = PinRecipesManager.Instance.Player;
+        int craftingTier = (int)EffectManager.GetValue(
+            PassiveEffects.CraftingTier,
+            _originalValue: 1f,
+            _entity: player,
+            _recipe: Recipe,
+            tags: Recipe.tags);
+        return Recipe.craftingTier <= craftingTier;
+    }
+
     private bool HasEnoughCraftingMaterials()
     {
         if (Recipe == null) return false;
@@ -172,14 +199,16 @@ public class PinnedRecipeSDO
         return true;
     }
 
-    public void UpdateRecipe(Recipe recipe)
+    public void UpdateRecipe(Recipe recipe, bool force = false)
     {
-        if (Recipe == recipe) return;
+        if (Recipe == recipe)
+            if (!force) return;
         Recipe = recipe;
         Ingredients.Clear();
         if (Recipe != null)
         {
-            CraftingTier = Recipe.craftingTier;
+            if (Recipe.craftingTier > 0)
+                CraftingTier = Recipe.craftingTier;
             Title = Localization.Get(Recipe.GetName());
             ItemValue itemValue = new ItemValue(Recipe.itemValueType);
             IconImg = itemValue.GetPropertyOverride("CustomIcon",

@@ -102,9 +102,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\Localization.txt" />
-    <Content Include="Config\XUi\controls.a20.xml" />
+    <Content Include="Config\XUi\controls.a21.xml" />
     <Content Include="Config\XUi\controls.xml" />
-    <Content Include="Config\XUi\windows.a20.xml" />
+    <Content Include="Config\XUi\windows.a21.xml" />
     <Content Include="Config\XUi\windows.xml" />
     <Content Include="Config\XUi\xui.xml" />
     <Content Include="ModInfo.xml" />

@@ -51,6 +51,7 @@ Ensure you don't have double nested folders and ModInfo.xml is at right place!
 ### Version 0.9.0
 
 - First compatibility with V1.0 (exp)
+- Add recipe quality alternation (alt+shift)
 
 ### Version 0.8.6
 
