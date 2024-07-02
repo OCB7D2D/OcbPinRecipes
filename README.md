@@ -21,7 +21,19 @@ all the necessary checks. So there is a chance that I
 missed a few edge cases in that regard. Please report
 here on GitHub if you find any issues with it.
 
-[![GitHub CI Compile Status][4]][3]
+[![GitHub CI Compile Status][5]][4]
+
+## Feature overview
+
+- Pin Multiple Recipes on to the side of your HUD.
+- Use scroll wheel on pins to change queued amount.
+- Use hammer icon to build recipe in open workstation/backpack.
+- Double click on ingredients in the pins to queue them up too.
+- Press "Alt" and use scroll wheel to select alternative recipes.
+- Press "Alt+Shift" and scroll, to select quality (if applicable).
+- Press "Shift" and click "+/-" or scroll for 10x inc-/decrement.
+- Use "G" Hot-Key to grab required ingredients from open chests.
+- Note: default "G" key-binding can be disabled/changed in xml.
 
 ## Grab ingredients QOL feature
 
@@ -43,15 +55,20 @@ helpful if your UI overwrites the item stack controller.
 
 ## Download and Install
 
-[Download from GitHub releases][2] and extract into your Mods folder!  
-Ensure you don't have double nested folders and ModInfo.xml is at right place!
+End-Users are encouraged to download my mods from [NexusMods][1].  
+Every download there helps me to buy stuff for mod development.
+
+Otherwise please use one of the [official releases][3] here.  
+Only clone or download the repo if you know what you do!
 
 ## Changelog
 
 ### Version 0.9.0
 
 - First compatibility with V1.0 (exp)
-- Add recipe quality alternation (alt+shift)
+- Add recipe quality alternation (alt+shift scroll)
+- Shift-click on plus/minus icon for 10x inc-/decrement
+- Fix UI issue with (optional) legendary parts
 
 ### Version 0.8.6
 
@@ -132,7 +149,7 @@ Ensure you don't have double nested folders and ModInfo.xml is at right place!
 ### Version 0.4.1
 
 - Small UI adjustments for better readability
-- [Alternative bigger UI][1] added (thx tdrhart)
+- [Alternative bigger UI][2] added (thx tdrhart)
 
 ### Version 0.4.0
 
@@ -189,7 +206,8 @@ Ensure you don't have double nested folders and ModInfo.xml is at right place!
 
 - Initial version
 
-[1]: https://github.com/OCB7D2D/OcbPinRecipesUiTdrHart
-[2]: https://github.com/OCB7D2D/OcbPinRecipes/releases
-[3]: https://github.com/OCB7D2D/OcbPinRecipes/actions/workflows/ci.yml
-[4]: https://github.com/OCB7D2D/OcbPinRecipes/actions/workflows/ci.yml/badge.svg
+[1]: https://www.nexusmods.com/7daystodie/mods/1850
+[2]: https://github.com/OCB7D2D/OcbPinRecipesUiTdrHart
+[3]: https://github.com/OCB7D2D/OcbPinRecipes/releases
+[4]: https://github.com/OCB7D2D/OcbPinRecipes/actions/workflows/ci.yml
+[5]: https://github.com/OCB7D2D/OcbPinRecipes/actions/workflows/ci.yml/badge.svg
