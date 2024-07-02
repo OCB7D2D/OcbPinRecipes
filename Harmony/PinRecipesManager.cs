@@ -219,19 +219,11 @@ public class PinRecipesManager
         {
             int amount = br.ReadInt32();
             int tier = br.ReadInt32();
-            if (CurrentFileVersion == 1)
+            int hash = br.ReadInt32();
+            if (isSameUser == false) continue;
+            if (CraftingManager.GetRecipe(hash) is Recipe recipe)
             {
-                string name = br.ReadString();
-                if (isSameUser == false) continue;
-                if (CraftingManager.GetRecipe(name) is Recipe recipe)
-                    Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea, tier));
-            }
-            else
-            {
-                int hash = br.ReadInt32();
-                if (isSameUser == false) continue;
-                if (CraftingManager.GetRecipe(hash) is Recipe recipe)
-                    Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea, tier));
+                Recipes.Add(new PinnedRecipeSDO(recipe, amount, CraftArea, tier));
             }
         }
         // Make sure to update all slots

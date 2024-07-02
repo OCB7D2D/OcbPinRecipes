@@ -65,6 +65,9 @@ public class XUiC_PinnedRecipeIngredient : XUiController
                 Localization.Get("ttManyRecipesForItem"));
         }
 
+        // Always select lowest tier
+        recipes[0].craftingTier = 1;
+
         // For now just pin the first recipe we found
         PinRecipesManager.Instance.PinRecipe(recipes[0], amount);
     }

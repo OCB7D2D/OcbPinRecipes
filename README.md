@@ -63,6 +63,10 @@ Only clone or download the repo if you know what you do!
 
 ## Changelog
 
+### Version 0.9.1
+
+- Fix when pinning ingredients with quality
+
 ### Version 0.9.0
 
 - First compatibility with V1.0 (exp)
