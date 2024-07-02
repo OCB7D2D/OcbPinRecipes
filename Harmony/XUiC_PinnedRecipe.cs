@@ -94,7 +94,7 @@ public class XUiC_PinnedRecipe : XUiController
                 value = Amount.ToString();
                 return true;
             case "quality":
-                value = RDO == null ? "-1" :
+                value = RDO == null ? "[NA]" :
                     RDO.CraftingTier.ToString();
                 return true;
             case "hasQuality":
@@ -134,7 +134,8 @@ public class XUiC_PinnedRecipe : XUiController
     private void OnIncrement(XUiController sender, int mouseButton)
     {
         if (RDO == null) return;
-        RDO.SetCount(RDO.Count + 1);
+        int factor = IsShiftPressed ? 10 : 1;
+        RDO.SetCount(RDO.Count + factor);
         SetAllChildrenDirty();
     }
 
@@ -142,7 +143,10 @@ public class XUiC_PinnedRecipe : XUiController
     {
         if (RDO == null) return;
         if (RDO.Count < 2) return;
-        RDO.SetCount(RDO.Count - 1);
+        int factor = IsShiftPressed ? 10 : 1;
+        int count = RDO.Count - factor;
+        if (count < 1) count = 1;
+        RDO.SetCount(count);
         SetAllChildrenDirty();
     }
 
