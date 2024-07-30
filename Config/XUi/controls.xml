@@ -1,3 +1,3 @@
-<configs patcher-version="4">
+<configs patcher-version="7">
 	<modinc path="controls.a21.xml"/>
 </configs>

@@ -234,9 +234,6 @@ public class XUiC_PinnedRecipe : XUiController
         SetAllChildrenDirty();
     }
 
-    static readonly FieldInfo FieldFuelWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "fuelWindow");
-    static readonly FieldInfo FieldHasQueueChanged = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "hasQueueChanged");
-
     // Most complex functionality I had to copy in order to support
     // Let's hope I got all the math correct to not allow any cheating ;)
     // Note: maybe we should enforce an update of the cached values?
@@ -314,14 +311,15 @@ public class XUiC_PinnedRecipe : XUiController
         {
             if (craftArea is XUiC_WorkstationWindowGroup workstation)
             {
-                if (FieldFuelWindow.GetValue(workstation) is XUiC_WorkstationFuelGrid grid)
+                if (workstation.fuelWindow is XUiC_WorkstationFuelGrid grid)
                 {
                     if (RDO.CraftingRequirementsValid(workstation, true))
                     {
                         grid.TurnOn();
                     }
                 }
-                FieldHasQueueChanged.SetValue(workstation, true);
+                // Vanilla now gets this info directly?
+                // FieldHasQueueChanged.SetValue(workstation, true);
             }
             // Consume the items once we scheduled the crafting
             xui.PlayerInventory.RemoveItems(_recipe.ingredients, Amount);

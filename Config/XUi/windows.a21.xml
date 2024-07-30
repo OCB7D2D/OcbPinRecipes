@@ -1,4 +1,4 @@
-<configs patcher-version="4">
+<configs patcher-version="7">
 	<!-- Pinnable Recipes -->
 	<append xpath="/windows">
 		<!-- Left or Right side of screen -->

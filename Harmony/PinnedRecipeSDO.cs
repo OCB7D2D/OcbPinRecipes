@@ -151,21 +151,16 @@ public class PinnedRecipeSDO
         return false;
     }
 
-    static readonly FieldInfo FieldToolWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "toolWindow");
-    static readonly FieldInfo FieldInputWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "inputWindow");
-    static readonly FieldInfo FieldOutputWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "outputWindow");
-    static readonly FieldInfo FieldFuelWindow = AccessTools.Field(typeof(XUiC_WorkstationWindowGroup), "fuelWindow");
-
     public bool CraftingRequirementsValid(XUiC_WorkstationWindowGroup win, bool includeFuel = false)
     {
         if (Recipe == null) return false;
-        if (FieldToolWindow.GetValue(win) is XUiC_WorkstationToolGrid tools)
+        if (win.toolWindow is XUiC_WorkstationToolGrid tools)
             if (tools != null && !tools.HasRequirement(Recipe)) return false;
-        if (FieldInputWindow.GetValue(win) is XUiC_WorkstationInputGrid input)
+        if (win.inputWindow is XUiC_WorkstationInputGrid input)
             if (input != null && !input.HasRequirement(Recipe)) return false;
-        if (FieldOutputWindow.GetValue(win) is XUiC_WorkstationOutputGrid output)
+        if (win.outputWindow is XUiC_WorkstationOutputGrid output)
             if (output != null && !output.HasRequirement(Recipe)) return false;
-        if (includeFuel && FieldFuelWindow.GetValue(win) is XUiC_WorkstationFuelGrid fuel)
+        if (win.fuelWindow is XUiC_WorkstationFuelGrid fuel)
             if (fuel != null && !fuel.HasRequirement(Recipe)) return false;
         return true;
     }
