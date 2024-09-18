@@ -10,7 +10,12 @@ public class XUiC_PinnedRecipe : XUiController
     public Recipe Recipe => RDO?.Recipe;
     public int Amount => RDO == null ? -1 : RDO.Count;
 
-    public string Title => RDO?.Title;
+    // Add count into title (if more than one)
+    public string Title =>
+        (RDO?.Recipe?.count ?? 1) == 1 ? RDO?.Title
+        : string.Format("{0} [ff6033](x{1})[-]",
+            RDO?.Title, RDO?.Recipe?.count ?? 1);
+
     public string IconImg => RDO?.IconImg;
     public string IconTint => RDO?.IconTint;
 

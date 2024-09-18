@@ -68,6 +68,10 @@ public class XUiC_PinnedRecipeIngredient : XUiController
         // Always select lowest tier
         recipes[0].craftingTier = 1;
 
+        // Divide by batch count, and round up
+        // We've checked that amount can't be zero
+        amount = (amount - 1) / recipes[0].count + 1;
+
         // For now just pin the first recipe we found
         PinRecipesManager.Instance.PinRecipe(recipes[0], amount);
     }
