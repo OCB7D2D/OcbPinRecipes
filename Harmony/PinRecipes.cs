@@ -197,6 +197,8 @@ public class PinRecipes : IModApi
     [HarmonyPatch("Write")]
     public class PlayerDataFile_Write
     {
+        // Run last to allow late adding
+        [HarmonyPriority(200)]
         static void Postfix(
             PlayerDataFile __instance,
             PooledBinaryWriter _bw)
@@ -210,6 +212,8 @@ public class PinRecipes : IModApi
     [HarmonyPatch("Read")]
     public class PlayerDataFile_Read
     {
+        // Run last to allow late adding
+        [HarmonyPriority(200)]
         static void Postfix(
             PlayerDataFile __instance,
             PooledBinaryReader _br)
