@@ -63,6 +63,11 @@ Only clone or download the repo if you know what you do!
 
 ## Changelog
 
+### Version 0.9.2
+
+- Optimize Overhaul compatibility
+- Handle recipes producing multiple items
+
 ### Version 0.9.1
 
 - Fix V1.0 stable (b333) compatibility
