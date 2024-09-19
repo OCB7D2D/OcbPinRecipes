@@ -3,8 +3,8 @@
 	<append xpath="/controls">
 		<pinned_recipe_row slot="9999">
 			<rect depth="1" width="176" height="67" slot="${slot}" controller="XUiC_PinnedRecipe, PinRecipes" on_scroll="true">
-				<sprite pos="0,0" width="176" height="67" color="[black]" globalopacitymod="0.9" type="sliced"/>
-				<sprite pos="1,-1" width="174" height="65" color="[lightGrey]" globalopacitymod="0.8" type="sliced"/>
+				<sprite pos="0,0" width="176" height="67" color="[black]" globalopacitymod="0.9" type="sliced" name="border"/>
+				<sprite pos="1,-1" width="174" height="65" color="[lightGrey]" globalopacitymod="0.8" type="sliced" name="bg"/>
 				<rect depth="4" pos="3,-2" width="170" height="30">
 					<!-- Main Icon of Pinned recipe -->
 					<sprite depth="1" atlas="ItemIconAtlas" pos="0,0" width="30" height="30" foregroundlayer="true" globalopacitymod="0.9" sprite="{icon}" color="{iconTint}"/>
@@ -203,4 +203,9 @@
 			</rect>
 		</pinned_recipe_ingredient_row>
 	</append>
+
+	<modif condition="Afterlife">
+		<setattribute xpath="/controls/pinned_recipe_row//rect/sprite[@name='bg']"
+			name="color">62,32,32,255</setattribute>
+	</modif>
 </configs>
