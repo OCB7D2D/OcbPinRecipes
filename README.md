@@ -63,6 +63,10 @@ Only clone or download the repo if you know what you do!
 
 ## Changelog
 
+### Version 0.9.3
+
+- Recompile for 7D2D V1.2 stable
+
 ### Version 0.9.2
 
 - Optimize Overhaul compatibility
