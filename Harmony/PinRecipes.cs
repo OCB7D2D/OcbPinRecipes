@@ -51,7 +51,7 @@ public class PinRecipes : IModApi
     // Note: It seems to me this is called pretty often!
     // Note: But all other windows do exactly the same!
     [HarmonyPatch(typeof(EntityPlayerLocal))]
-    [HarmonyPatch("guiDrawCrosshair")]
+    [HarmonyPatch("OnHUD")]
     public class EntityPlayerLocal_OnHUD
     {
         static void Postfix(GUIWindowManager ___windowManager)
