@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class XUiC_PinnedRecipe : XUiController
@@ -196,6 +194,9 @@ public class XUiC_PinnedRecipe : XUiController
     private void HandleQualityScroll(float delta)
     {
         if (RDO == null) return;
+        if (PinRecipes.NoQuality) return;
+        var klass = Recipe.GetOutputItemClass();
+        if (!klass.ShowQualityBar) return;
         // Hardcoded to 6 in vanilla
         var maxq = RDO.MaxQuality();
         if (maxq <= 0) return;

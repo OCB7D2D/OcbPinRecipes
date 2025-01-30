@@ -3,16 +3,13 @@
 // Most of its values are read-only by nature
 // Only a few parameters are allowed to change
 
-using HarmonyLib;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 public class PinnedRecipeSDO
 {
 
-    public int Count = 1; // adjustable
+    public int Count = 1;
     public int CraftingTier = -1;
     public Recipe Recipe = null;
     public string Title = null;
@@ -38,13 +35,13 @@ public class PinnedRecipeSDO
 
     public bool HasQuality()
     {
-        return Recipe != null && ItemClass.
-            GetForId(Recipe.itemValueType).HasQuality;
+        return Recipe != null && !PinRecipes.NoQuality &&
+            ItemClass.GetForId(Recipe.itemValueType).HasQuality;
     }
 
     public int MaxQuality()
     {
-        return 6;
+        return QualityInfo.qualityColors.Length - 1;
     }
 
     // Update the multiplier

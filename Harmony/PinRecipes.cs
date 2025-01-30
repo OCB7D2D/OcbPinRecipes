@@ -5,11 +5,14 @@ using System.Reflection;
 public class PinRecipes : IModApi
 {
 
+    public static bool NoQuality = false;
+
     public void InitMod(Mod mod)
     {
         Log.Out("OCB Harmony Patch: " + GetType().ToString());
         Harmony harmony = new Harmony(GetType().ToString());
         harmony.PatchAll(Assembly.GetExecutingAssembly());
+        NoQuality = ModManager.ModLoaded("Afterlife");
     }
 
     // Patch to add pin option into action list
