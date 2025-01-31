@@ -63,6 +63,10 @@ Only clone or download the repo if you know what you do!
 
 ## Changelog
 
+### Version 0.9.5
+
+- Further improve mod compatibility
+
 ### Version 0.9.4
 
 - Improve AL compatibility with dynamic quality

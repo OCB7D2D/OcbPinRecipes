@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -310,14 +311,53 @@ public class PinRecipes : IModApi
     {
         static void Postfix(ref List<Mod> __result)
         {
+            moveSelf(ref __result);
+            moveAddon(ref __result);
+        }
+
+        private static void moveAddon(ref List<Mod> result)
+        {
             int myPos = -1, depPos = -1;
-            if (__result == null) return;
+            if (result == null) return;
             // Find position of mods we depend on
-            for (int i = 0; i < __result.Count; i += 1)
+            for (int i = 0; i < result.Count; i += 1)
             {
-                switch (__result[i].Name)
+                switch (result[i].Name)
+                {
+                    case "OcbPinRecipes":
+                        if (depPos < i + 1)
+                            depPos = i + 1;
+                        break;
+                    case "OcbPinRecipesUiTdrHart":
+                        myPos = i;
+                        break;
+                }
+            }
+            // Didn't detect ourself?
+            if (myPos == -1)
+            {
+                return;
+            }
+            // Detected no dependencies?
+            if (depPos == -1) return;
+            if (depPos < myPos) return;
+            // Move our mod after deps
+            var item = result[myPos];
+            result.RemoveAt(myPos);
+            result.Insert(depPos - 1, item);
+        }
+
+        private static void moveSelf(ref List<Mod> result)
+        {
+            int myPos = -1, depPos = -1;
+            if (result == null) return;
+            // Find position of mods we depend on
+            for (int i = 0; i < result.Count; i += 1)
+            {
+                switch (result[i].Name)
                 {
                     case "SMXcore":
+                    case "Afterlife":
                     case "Dizor_VoidGags":
                         if (depPos < i + 1)
                             depPos = i + 1;
@@ -337,9 +377,9 @@ public class PinRecipes : IModApi
             if (depPos == -1) return;
             if (depPos < myPos) return;
             // Move our mod after deps
-            var item = __result[myPos];
-            __result.RemoveAt(myPos);
-            __result.Insert(depPos - 1, item);
+            var item = result[myPos];
+            result.RemoveAt(myPos);
+            result.Insert(depPos - 1, item);
         }
     }
 
