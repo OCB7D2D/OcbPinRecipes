@@ -317,8 +317,10 @@ public class PinRecipes : IModApi
             {
                 switch (__result[i].Name)
                 {
-                    case "SMXui":
-                        depPos = i + 1;
+                    case "SMXcore":
+                    case "Dizor_VoidGags":
+                        if (depPos < i + 1)
+                            depPos = i + 1;
                         break;
                     case "OcbPinRecipes":
                         myPos = i;
@@ -333,11 +335,11 @@ public class PinRecipes : IModApi
             }
             // Detected no dependencies?
             if (depPos == -1) return;
+            if (depPos < myPos) return;
             // Move our mod after deps
             var item = __result[myPos];
             __result.RemoveAt(myPos);
-            if (depPos > myPos) depPos--;
-            __result.Insert(depPos, item);
+            __result.Insert(depPos - 1, item);
         }
     }
 

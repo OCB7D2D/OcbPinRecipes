@@ -67,6 +67,8 @@ Only clone or download the repo if you know what you do!
 
 - Improve AL compatibility with dynamic quality
 - Fixed Afterlife compatibility again
+- Add UI compatibility for VoidGags
+- Improve SMXui compatibility
 
 ### Version 0.9.3
 
