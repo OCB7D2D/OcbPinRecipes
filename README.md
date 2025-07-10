@@ -1,4 +1,4 @@
-# OCB Advanced Pin Recipes Mod - 7 Days to Die (V1.0) Addon
+# OCB Advanced Pin Recipes Mod - 7 Days to Die (V2.0) Addon
 
 A small harmony mod enabling to pin recipes on the UI.
 
@@ -62,6 +62,10 @@ Otherwise please use one of the [official releases][3] here.
 Only clone or download the repo if you know what you do!
 
 ## Changelog
+
+### Version 1.0.0
+
+- Update for 7D2D V2.0 stable
 
 ### Version 0.9.5
 
