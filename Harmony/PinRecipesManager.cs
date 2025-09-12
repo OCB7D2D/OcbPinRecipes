@@ -125,9 +125,11 @@ public class PinRecipesManager
     public void RefreshContainers()
     {
         var vehicle = XUI?.FindWindowGroupByName(XUiC_VehicleStorageWindowGroup.ID);
-        if (vehicle != null) vehicle.RefreshBindingsSelfAndChildren();
+        if (vehicle != null && vehicle.IsOpen)
+            vehicle.RefreshBindingsSelfAndChildren();
         var loot = XUI?.FindWindowGroupByName(XUiC_LootWindowGroup.ID);
-        if (loot != null) loot.RefreshBindingsSelfAndChildren();
+        if (loot != null && loot.IsOpen)
+            loot.RefreshBindingsSelfAndChildren();
     }
 
     // We only really support one window currently

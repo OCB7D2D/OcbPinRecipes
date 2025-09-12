@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -241,7 +240,7 @@ public class PinRecipes : IModApi
 
     // Add new field to loot containers
     [HarmonyPatch(typeof(XUiC_LootWindow))]
-    [HarmonyPatch("GetBindingValue")]
+    [HarmonyPatch("GetBindingValueInternal")]
     public class XUiC_LootWindow_GetBindingValue
     {
         static bool Prefix(
@@ -261,7 +260,7 @@ public class PinRecipes : IModApi
 
     // Add new field to vehicle containers
     [HarmonyPatch(typeof(XUiC_VehicleContainer))]
-    [HarmonyPatch("GetBindingValue")]
+    [HarmonyPatch("GetBindingValueInternal")]
     public class XUiC_VehicleContainer_GetBindingValue
     {
         static bool Prefix(
@@ -380,6 +379,54 @@ public class PinRecipes : IModApi
             var item = result[myPos];
             result.RemoveAt(myPos);
             result.Insert(depPos - 1, item);
+        }
+    }
+
+    // Register handlers when loot windows open/close
+    [HarmonyPatch(typeof(XUiC_LootWindow))]
+    [HarmonyPatch("OnOpen")]
+    public class XUiC_LootContainer_OnOpen
+    {
+        static void Postfix(XUiC_LootWindow __instance)
+        {
+            __instance.xui?.GetWindow("windowPinRecipes")?
+                .Controller?.Parent?.RefreshBindings();
+        }
+    }
+
+    // Register handlers when loot windows open/close
+    [HarmonyPatch(typeof(XUiC_LootWindow))]
+    [HarmonyPatch("OnClose")]
+    public class XUiC_LootContainer_OnClose
+    {
+        static void Postfix(XUiC_LootWindow __instance)
+        {
+            __instance.xui?.GetWindow("windowPinRecipes")?
+                .Controller?.Parent?.RefreshBindings();
+        }
+    }
+
+    // Register handlers when loot windows open/close
+    [HarmonyPatch(typeof(XUiC_VehicleContainer))]
+    [HarmonyPatch("OnOpen")]
+    public class XUiC_VehicleContainer_OnOpen
+    {
+        static void Postfix(XUiC_LootWindow __instance)
+        {
+            __instance.xui?.GetWindow("windowPinRecipes")?
+                .Controller?.Parent?.RefreshBindings();
+        }
+    }
+
+    // Register handlers when loot windows open/close
+    [HarmonyPatch(typeof(XUiC_VehicleContainer))]
+    [HarmonyPatch("OnClose")]
+    public class XUiC_VehicleContainer_OnClose
+    {
+        static void Postfix(XUiC_LootWindow __instance)
+        {
+            __instance.xui?.GetWindow("windowPinRecipes")?
+                .Controller?.Parent?.RefreshBindings();
         }
     }
 
